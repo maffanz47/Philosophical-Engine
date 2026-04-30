@@ -233,25 +233,70 @@
     .probs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 600px) { .probs-grid { grid-template-columns: 1fr; } }
 
-    /* ── Metrics row (K-Means + PCA) ─────────────────────────────────────── */
-    .metrics-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-    @media (max-width: 520px) { .metrics-row { grid-template-columns: 1fr 1fr; } }
-    .metric-card {
+    /* ── Visualizations (K-Means & PCA) ──────────────────────────────────── */
+    .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 550px) { .viz-grid { grid-template-columns: 1fr; } }
+    
+    .viz-card {
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 18px 20px;
-      text-align: center;
-      transition: border-color .2s;
+      padding: 20px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; transition: border-color .2s;
     }
-    .metric-card:hover { border-color: rgba(124,110,245,.3); }
-    .metric-icon { font-size: 1.4rem; margin-bottom: 8px; }
-    .metric-value {
-      font-size: 1.4rem; font-weight: 700;
-      color: var(--accent2);
-      font-variant-numeric: tabular-nums;
+    .viz-card:hover { border-color: rgba(124,110,245,.3); }
+
+    /* K-Means Nodes */
+    .kmeans-container {
+      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
     }
-    .metric-label { font-size: .72rem; color: var(--muted); margin-top: 4px; letter-spacing: .05em; }
+    .cluster-node {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .9rem; color: var(--muted);
+      transition: all 0.4s cubic-bezier(.4,0,.2,1);
+    }
+    .cluster-node.active {
+      background: var(--accent);
+      border-color: var(--accent2);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(124,110,245,.5);
+      transform: scale(1.15);
+    }
+
+    /* PCA Plane */
+    .pca-plane {
+      width: 100%; max-width: 160px; aspect-ratio: 1;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .pca-axis-x {
+      position: absolute; top: 50%; left: 0; right: 0;
+      height: 1px; background: rgba(255,255,255,.1);
+    }
+    .pca-axis-y {
+      position: absolute; left: 50%; top: 0; bottom: 0;
+      width: 1px; background: rgba(255,255,255,.1);
+    }
+    .pca-point {
+      position: absolute;
+      width: 12px; height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 12px rgba(245,197,66,.8);
+      transition: top 1s cubic-bezier(.4,0,.2,1), left 1s cubic-bezier(.4,0,.2,1), opacity 0.5s;
+      opacity: 0; left: 50%; top: 50%; /* Start center */
+    }
+
+    .metric-label { font-size: .72rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
 
     /* ── Footer ──────────────────────────────────────────────────────────── */
     footer {
@@ -354,22 +399,30 @@
     <!-- Unsupervised metrics -->
     <div class="card fade-in">
       <div class="section-title">Unsupervised Analysis</div>
-      <div class="metrics-row">
-        <div class="metric-card">
-          <div class="metric-icon">🔵</div>
-          <div class="metric-value" id="cluster-val">—</div>
-          <div class="metric-label">K-Means Cluster ID</div>
+      <div class="viz-grid">
+        
+        <!-- K-Means Visualization -->
+        <div class="viz-card">
+          <div class="metric-label">K-Means Cluster Assignment</div>
+          <div class="kmeans-container" id="kmeans-viz">
+            <!-- Dots injected by JS -->
+          </div>
+          <div id="cluster-val" style="font-size:.85rem; font-weight:600; color:var(--text); margin-top:4px;">—</div>
         </div>
-        <div class="metric-card">
-          <div class="metric-icon">📐</div>
-          <div class="metric-value" id="pca-x-val">—</div>
-          <div class="metric-label">PCA Component 1 (x)</div>
+
+        <!-- PCA Visualization -->
+        <div class="viz-card">
+          <div class="metric-label">PCA 2D Projection Space</div>
+          <div class="pca-plane">
+            <div class="pca-axis-x"></div>
+            <div class="pca-axis-y"></div>
+            <div class="pca-point" id="pca-point"></div>
+          </div>
+          <div style="font-size:.75rem; color:var(--text-dim); margin-top:4px; font-variant-numeric: tabular-nums;">
+            X: <span id="pca-x-val">—</span> | Y: <span id="pca-y-val">—</span>
+          </div>
         </div>
-        <div class="metric-card">
-          <div class="metric-icon">📏</div>
-          <div class="metric-value" id="pca-y-val">—</div>
-          <div class="metric-label">PCA Component 2 (y)</div>
-        </div>
+
       </div>
       <p style="font-size:.78rem;color:var(--muted);margin-top:14px;line-height:1.6;">
         <strong style="color:var(--text-dim)">K-Means</strong> groups texts by stylistic fingerprint
@@ -464,10 +517,44 @@
     // Tier 2 probability bars
     renderBars('t2-probs', d.nn_tier2.probabilities, d.nn_tier2.label);
 
-    // Unsupervised metrics
-    document.getElementById('cluster-val').textContent = d.kmeans_cluster;
+    // Unsupervised metrics text update
+    document.getElementById('cluster-val').textContent = `Assigned to Cluster ${d.kmeans_cluster}`;
     document.getElementById('pca-x-val').textContent   = d.pca_x.toFixed(4);
     document.getElementById('pca-y-val').textContent   = d.pca_y.toFixed(4);
+
+    // Visualize K-Means (7 clusters: 0 to 6)
+    const kmeansViz = document.getElementById('kmeans-viz');
+    kmeansViz.innerHTML = '';
+    for (let i = 0; i < 7; i++) {
+      const node = document.createElement('div');
+      node.className = `cluster-node ${i === d.kmeans_cluster ? 'active' : ''}`;
+      node.textContent = i;
+      kmeansViz.appendChild(node);
+    }
+
+    // Visualize PCA
+    const pcaPoint = document.getElementById('pca-point');
+    
+    // Scale coordinates for CSS positioning. 
+    // Assuming a standard PCA projection variance bounds roughly between [-1.5, 1.5]
+    const scale = 1.5;
+    const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+    
+    // Map [-scale, scale] to [5%, 95%] so it stays inside the box
+    const xPct = clamp(((d.pca_x / scale) + 0.5) * 100, 5, 95);
+    const yPct = clamp(((-d.pca_y / scale) + 0.5) * 100, 5, 95); // Invert Y for CSS top
+
+    // Reset position for animation
+    pcaPoint.style.opacity = '0';
+    pcaPoint.style.left = '50%';
+    pcaPoint.style.top = '50%';
+
+    // Trigger animation next frame
+    requestAnimationFrame(() => {
+      pcaPoint.style.opacity = '1';
+      pcaPoint.style.left = `${xPct}%`;
+      pcaPoint.style.top = `${yPct}%`;
+    });
 
     results.style.display = 'flex';
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
