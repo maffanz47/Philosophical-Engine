@@ -19,7 +19,7 @@ from taxonomy import (
 from ingestion import ingest_all
 from preprocessing import clean_and_lemmatize, build_tfidf, VocabEncoder
 from models_supervised import (
-    train_svm, HierarchicalMLP, HierarchicalBiLSTM, train_nn, predict_nn,
+    train_svm, HierarchicalMLP, train_nn, predict_nn,
 )
 from models_unsupervised import fit_kmeans, fit_pca
 from validation import run_data_integrity_check
@@ -37,7 +37,6 @@ class PhilosophyEngine:
         self.vocab_enc = None   # VocabEncoder (dense sequences)
         self.svm       = None   # fitted SVC
         self.mlp       = None   # trained HierarchicalMLP
-        self.bilstm    = None   # trained HierarchicalBiLSTM
         self.kmeans    = None   # fitted KMeans
         self.pca       = None   # fitted PCA
         self.device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -93,11 +92,7 @@ class PhilosophyEngine:
         self.mlp = train_nn(mlp, X_dense, y1_t, y2_t,
                             epochs=nn_epochs, batch_size=batch_size)
 
-        # ── 4c Bi-LSTM ────────────────────────────────────────────────────
-        print(f"\n  ── Hierarchical Bi-LSTM (epochs={nn_epochs}, bs={batch_size}) ──")
-        bilstm = HierarchicalBiLSTM(vocab_size=self.vocab_enc.vocab_size)
-        self.bilstm = train_nn(bilstm, X_seq_t, y1_t, y2_t,
-                               epochs=nn_epochs, batch_size=batch_size)
+
 
     # ── Phase 5 ───────────────────────────────────────────────────────────
     def fit_unsupervised(self, n_clusters: int = 7):
@@ -131,13 +126,12 @@ class PhilosophyEngine:
         
         # Save PyTorch state dictionaries
         torch.save(self.mlp.state_dict(), f"{path}/mlp.pt")
-        torch.save(self.bilstm.state_dict(), f"{path}/bilstm.pt")
         print(f"\n  [✓] All models successfully saved to '{path}/'")
 
     def load(self, path: str = "engine_artifacts"):
         """Load trained models and vectorizers from disk."""
         import os, joblib
-        from models_supervised import HierarchicalMLP, HierarchicalBiLSTM
+        from models_supervised import HierarchicalMLP
 
         if not os.path.exists(path):
             raise FileNotFoundError(f"Directory '{path}' not found. Run train.py first.")
@@ -154,10 +148,6 @@ class PhilosophyEngine:
         self.mlp = HierarchicalMLP(input_dim=input_dim).to(self.device)
         self.mlp.load_state_dict(torch.load(f"{path}/mlp.pt", map_location=self.device, weights_only=True))
         self.mlp.eval()
-        
-        self.bilstm = HierarchicalBiLSTM(vocab_size=self.vocab_enc.vocab_size).to(self.device)
-        self.bilstm.load_state_dict(torch.load(f"{path}/bilstm.pt", map_location=self.device, weights_only=True))
-        self.bilstm.eval()
         print("  [✓] Engine ready.")
 
     # ── Single-text Inference ─────────────────────────────────────────────
