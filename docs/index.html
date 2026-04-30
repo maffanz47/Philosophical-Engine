@@ -434,6 +434,20 @@
     charCount.textContent = `${textarea.value.length.toLocaleString()} characters`;
   });
 
+  /* ── Scatter plot state (top-level — shared across all functions) ─────── */
+  const SCHOOL_COLORS = {
+    'Idealism':       '#a78bfa',
+    'Materialism':    '#34d399',
+    'Rationalism':    '#60a5fa',
+    'Empiricism':     '#f472b6',
+    'Existentialism': '#fb923c',
+    'Nihilism':       '#f87171',
+    'Stoicism':       '#fbbf24',
+  };
+  let _metaCache  = null;   // cached /meta response (cluster centers + labels)
+  let _userPoint  = null;   // {x, y, cluster} from latest /predict response
+  let _animFrame  = 0;      // frame counter for star pulse animation
+
   /* ── Classify ─────────────────────────────────────────────────────────── */
   async function classify() {
     const text    = textarea.value.trim();
