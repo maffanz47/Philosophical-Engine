@@ -97,6 +97,21 @@ class PredictResponse(BaseModel):
 
 class MetaResponse(BaseModel):
     cluster_centers_2d: list[list[float]]
+    cluster_names: list[str]        # Majority-vote Tier-2 label per cluster
+    cluster_colors: list[str]       # Consistent hex color per school
+
+
+# Consistent color palette for each philosophical school
+_SCHOOL_COLORS: dict[str, str] = {
+    "Idealism":       "#7c6ef5",
+    "Materialism":    "#34d399",
+    "Rationalism":    "#60a5fa",
+    "Empiricism":     "#f59e0b",
+    "Existentialism": "#f87171",
+    "Nihilism":       "#a78bfa",
+    "Stoicism":       "#6ee7b7",
+}
+_DEFAULT_COLOR = "#94a3b8"
 
 
 # ── Endpoints ──────────────────────────────────────────────────────────────
@@ -114,13 +129,62 @@ def health():
 
 @app.get("/meta", response_model=MetaResponse, tags=["meta"])
 def get_meta():
-    """Returns the K-Means cluster centroids projected into 2D PCA space."""
+    """
+    Returns K-Means cluster metadata for visualization:
+    - Cluster centroids projected into 2D PCA space
+    - Majority-vote Tier-2 label compared against actual training labels
+    - Consistent color per philosophical school
+    """
     if engine is None:
         raise HTTPException(status_code=503, detail="Engine not loaded.")
     try:
+        import numpy as np
+        from collections import Counter
+        from taxonomy import IDX_TO_TIER2
+        from ingestion import ingest_all
+        from preprocessing import clean_and_lemmatize
+
         centers_10k = engine.kmeans.cluster_centers_
-        centers_2d = engine.pca.transform(centers_10k)
-        return MetaResponse(cluster_centers_2d=centers_2d.tolist())
+        centers_2d  = engine.pca.transform(centers_10k).tolist()
+        n_clusters  = len(centers_2d)
+
+        # ── Majority-vote labelling ──────────────────────────────────────────
+        # Load the actual training texts, predict cluster membership, compare
+        # against true Tier-2 labels → the winning school labels the cluster.
+        try:
+            raw_texts, _, y_t2 = ingest_all()
+            clean_texts = [clean_and_lemmatize(t) for t in raw_texts]
+            X = engine.tfidf_vec.transform(clean_texts)
+            cluster_assignments = engine.kmeans.predict(X)
+
+            buckets: dict[int, list[int]] = {i: [] for i in range(n_clusters)}
+            for sample_cluster, true_label_idx in zip(cluster_assignments, y_t2):
+                buckets[int(sample_cluster)].append(int(true_label_idx))
+
+            cluster_names = [
+                IDX_TO_TIER2[Counter(buckets[i]).most_common(1)[0][0]]
+                if buckets[i] else "Unknown"
+                for i in range(n_clusters)
+            ]
+        except Exception:
+            # Fast fallback: run centroids through the neural network
+            import torch
+            from engine_core import predict_nn
+            cluster_names = []
+            for c in centers_10k:
+                x = torch.tensor(c, dtype=torch.float32).unsqueeze(0).to(engine.device)
+                _, p2 = predict_nn(engine.mlp, x)
+                cluster_names.append(IDX_TO_TIER2[int(np.argmax(p2[0]))])
+
+        cluster_colors = [
+            _SCHOOL_COLORS.get(name, _DEFAULT_COLOR) for name in cluster_names
+        ]
+
+        return MetaResponse(
+            cluster_centers_2d=centers_2d,
+            cluster_names=cluster_names,
+            cluster_colors=cluster_colors,
+        )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
