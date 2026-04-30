@@ -1,0 +1,10 @@
+version: 2
+deployments:
+  - name: philosophical-engine-daily
+    tag: daily
+    schedule:
+      cron: "0 2 * * *"
+      timezone: "UTC"
+    entrypoint: "pipeline.philosophical_pipeline:philosophical_pipeline"
+    parameters: {}
+    work_queue_name: "default"

@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../.env
+    depends_on:
+      - mlflow
+    volumes:
+      - ../models:/models
+      - ../reports:/reports
+    restart: unless-stopped
+
+  prefect-server:
+    image: prefecthq/prefect:2-latest
+    ports:
+      - "4200:4200"
+    restart: unless-stopped
+
+  prefect-worker:
+    image: prefecthq/prefect:2-latest
+    command: worker start
+    depends_on:
+      - prefect-server
+    restart: unless-stopped
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    ports:
+      - "5000:5000"
+    command: mlflow server --host 0.0.0.0
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    env_file:
+      - ../.env
+    restart: unless-stopped
