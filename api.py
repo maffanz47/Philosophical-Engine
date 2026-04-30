@@ -97,21 +97,8 @@ class PredictResponse(BaseModel):
 
 class MetaResponse(BaseModel):
     cluster_centers_2d: list[list[float]]
-    cluster_names: list[str]        # Majority-vote Tier-2 label per cluster
-    cluster_colors: list[str]       # Consistent hex color per school
-
-
-# Consistent color palette for each philosophical school
-_SCHOOL_COLORS: dict[str, str] = {
-    "Idealism":       "#7c6ef5",
-    "Materialism":    "#34d399",
-    "Rationalism":    "#60a5fa",
-    "Empiricism":     "#f59e0b",
-    "Existentialism": "#f87171",
-    "Nihilism":       "#a78bfa",
-    "Stoicism":       "#6ee7b7",
-}
-_DEFAULT_COLOR = "#94a3b8"
+    cluster_names:      list[str]   # Tier-2 school labels
+    cluster_tier1:      list[str]   # Tier-1 branch labels
 
 
 # ── Endpoints ──────────────────────────────────────────────────────────────
@@ -130,62 +117,51 @@ def health():
 @app.get("/meta", response_model=MetaResponse, tags=["meta"])
 def get_meta():
     """
-    Returns K-Means cluster metadata for visualization:
-    - Cluster centroids projected into 2D PCA space
-    - Majority-vote Tier-2 label compared against actual training labels
-    - Consistent color per philosophical school
+    Returns K-Means cluster centroids projected into 2D PCA space,
+    labeled with the Tier-2 school and Tier-1 branch that each
+    cluster dominantly represents (determined by SVM majority vote).
     """
     if engine is None:
         raise HTTPException(status_code=503, detail="Engine not loaded.")
     try:
         import numpy as np
-        from collections import Counter
-        from taxonomy import IDX_TO_TIER2
-        from ingestion import ingest_all
-        from preprocessing import clean_and_lemmatize
+        from taxonomy import IDX_TO_TIER1, IDX_TO_TIER2, TIER2_TO_TIER1
 
-        centers_10k = engine.kmeans.cluster_centers_
-        centers_2d  = engine.pca.transform(centers_10k).tolist()
-        n_clusters  = len(centers_2d)
+        centers_10k = engine.kmeans.cluster_centers_          # shape (7, 10000)
+        centers_2d  = engine.pca.transform(centers_10k)       # shape (7, 2)
 
-        # ── Majority-vote labelling ──────────────────────────────────────────
-        # Load the actual training texts, predict cluster membership, compare
-        # against true Tier-2 labels → the winning school labels the cluster.
-        try:
-            raw_texts, _, y_t2 = ingest_all()
-            clean_texts = [clean_and_lemmatize(t) for t in raw_texts]
-            X = engine.tfidf_vec.transform(clean_texts)
-            cluster_assignments = engine.kmeans.predict(X)
+        # ── Label each cluster using SVM prediction on the centroid ──────────
+        # SVM was trained on Tier-1, so we get the branch.
+        # For Tier-2 we use the MLP's argmax on the centroid vector.
+        import torch
+        from engine_core import predict_nn
 
-            buckets: dict[int, list[int]] = {i: [] for i in range(n_clusters)}
-            for sample_cluster, true_label_idx in zip(cluster_assignments, y_t2):
-                buckets[int(sample_cluster)].append(int(true_label_idx))
+        cluster_names = []   # Tier-2
+        cluster_tier1 = []   # Tier-1
 
-            cluster_names = [
-                IDX_TO_TIER2[Counter(buckets[i]).most_common(1)[0][0]]
-                if buckets[i] else "Unknown"
-                for i in range(n_clusters)
-            ]
-        except Exception:
-            # Fast fallback: run centroids through the neural network
-            import torch
-            from engine_core import predict_nn
-            cluster_names = []
-            for c in centers_10k:
-                x = torch.tensor(c, dtype=torch.float32).unsqueeze(0).to(engine.device)
-                _, p2 = predict_nn(engine.mlp, x)
-                cluster_names.append(IDX_TO_TIER2[int(np.argmax(p2[0]))])
+        for c in centers_10k:
+            # --- Tier-1 via SVM on the centroid (sparse-safe) ---
+            import scipy.sparse as sp
+            c_sparse = sp.csr_matrix(c.reshape(1, -1))
+            t1_idx   = int(engine.svm.predict(c_sparse)[0])
+            t1_label = IDX_TO_TIER1[t1_idx]
 
-        cluster_colors = [
-            _SCHOOL_COLORS.get(name, _DEFAULT_COLOR) for name in cluster_names
-        ]
+            # --- Tier-2 via MLP on the centroid ---
+            c_tensor = torch.tensor(c, dtype=torch.float32).unsqueeze(0).to(engine.device)
+            _, p2    = predict_nn(engine.mlp, c_tensor)
+            t2_idx   = int(p2[0].argmax())
+            t2_label = IDX_TO_TIER2[t2_idx]
+
+            cluster_names.append(t2_label)
+            cluster_tier1.append(t1_label)
 
         return MetaResponse(
-            cluster_centers_2d=centers_2d,
+            cluster_centers_2d=centers_2d.tolist(),
             cluster_names=cluster_names,
-            cluster_colors=cluster_colors,
+            cluster_tier1=cluster_tier1,
         )
     except Exception as exc:
+        import traceback; traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(exc))
 
 

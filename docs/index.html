@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -12,7 +12,7 @@
         rel="stylesheet" />
 
   <style>
-    /* â”€â”€ Design Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Design Tokens ──────────────────────────────────────────────────── */
     :root {
       --bg:         #0a0c12;
       --surface:    #111420;
@@ -31,7 +31,7 @@
       --shadow:     0 8px 40px rgba(0,0,0,.6);
     }
 
-    /* â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Reset ──────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
@@ -44,7 +44,7 @@
       align-items: center;
     }
 
-    /* â”€â”€ Animated background grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Animated background grid ───────────────────────────────────────── */
     body::before {
       content: '';
       position: fixed; inset: 0; z-index: -1;
@@ -54,7 +54,7 @@
       background-size: 48px 48px;
     }
 
-    /* â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Header ─────────────────────────────────────────────────────────── */
     header {
       width: 100%; max-width: 860px;
       padding: 56px 24px 0;
@@ -85,7 +85,7 @@
       color: var(--text-dim); font-size: .95rem; font-weight: 400;
     }
 
-    /* â”€â”€ Main card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Main card ───────────────────────────────────────────────────────── */
     main {
       width: 100%; max-width: 860px;
       padding: 32px 24px 80px;
@@ -102,7 +102,7 @@
     }
     .card:focus-within { border-color: rgba(124,110,245,.4); }
 
-    /* â”€â”€ Input area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Input area ──────────────────────────────────────────────────────── */
     .input-header {
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 14px;
@@ -140,7 +140,7 @@
     }
     .url-row input:focus { border-color: var(--accent); }
 
-    /* â”€â”€ Classify button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Classify button ─────────────────────────────────────────────────── */
     #classify-btn {
       display: flex; align-items: center; justify-content: center; gap: 10px;
       width: 100%; margin-top: 18px;
@@ -166,7 +166,7 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* â”€â”€ Error banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Error banner ────────────────────────────────────────────────────── */
     #error-banner {
       display: none;
       background: rgba(248,113,113,.1);
@@ -176,7 +176,7 @@
       color: var(--red); font-size: .9rem;
     }
 
-    /* â”€â”€ Results section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Results section ─────────────────────────────────────────────────── */
     #results { display: none; flex-direction: column; gap: 20px; }
 
     /* Verdict banner */
@@ -205,14 +205,14 @@
       background: var(--border);
     }
 
-    /* â”€â”€ Section title â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Section title ───────────────────────────────────────────────────── */
     .section-title {
       font-size: .78rem; font-weight: 700;
       letter-spacing: .12em; text-transform: uppercase;
       color: var(--muted); margin-bottom: 18px;
     }
 
-    /* â”€â”€ Probability bars â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Probability bars ────────────────────────────────────────────────── */
     .prob-grid { display: flex; flex-direction: column; gap: 12px; }
     .prob-row { display: grid; grid-template-columns: 160px 1fr 52px; gap: 12px; align-items: center; }
     .prob-name { font-size: .88rem; font-weight: 500; color: var(--text-dim); white-space: nowrap; }
@@ -229,77 +229,56 @@
     .prob-bar-fill.top { background: linear-gradient(90deg, var(--gold), #fb923c); }
     .prob-pct { font-size: .85rem; font-weight: 600; color: var(--text); text-align: right; }
 
-    /* â”€â”€ Two-column grid for T1 / T2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Two-column grid for T1 / T2 ────────────────────────────────────── */
     .probs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 600px) { .probs-grid { grid-template-columns: 1fr; } }
 
-    /* â”€â”€ Visualizations (K-Means & PCA) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 550px) { .viz-grid { grid-template-columns: 1fr; } }
-    
-    .viz-card {
+    /* ── Scatter Plot ──────────────────────────────────────────────────────── */
+    .scatter-wrap {
+      position: relative; width: 100%;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      padding: 20px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 16px; transition: border-color .2s;
-    }
-    .viz-card:hover { border-color: rgba(124,110,245,.3); }
-
-    /* K-Means Nodes */
-    .kmeans-container {
-      display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-    }
-    .cluster-node {
-      padding: 6px 14px;
-      border-radius: 999px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 600; font-size: .75rem; color: var(--muted);
-      transition: all 0.4s cubic-bezier(.4,0,.2,1);
-      white-space: nowrap;
-    }
-    .cluster-node.active {
-      background: var(--accent);
-      border-color: var(--accent2);
-      color: #fff;
-      box-shadow: 0 0 20px rgba(124,110,245,.5);
-      transform: scale(1.15);
-    }
-
-    /* PCA Plane */
-    .pca-plane {
-      width: 100%; max-width: 160px; aspect-ratio: 1;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      position: relative;
       overflow: hidden;
     }
-    .pca-axis-x {
-      position: absolute; top: 50%; left: 0; right: 0;
-      height: 1px; background: rgba(255,255,255,.1);
+    #scatter-canvas {
+      display: block; width: 100%; height: auto;
+      cursor: default;
     }
-    .pca-axis-y {
-      position: absolute; left: 50%; top: 0; bottom: 0;
-      width: 1px; background: rgba(255,255,255,.1);
+    .scatter-legend {
+      display: flex; flex-wrap: wrap; gap: 8px 16px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
     }
-    .pca-point {
-      position: absolute;
-      width: 12px; height: 12px;
-      background: var(--gold);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 0 12px rgba(245,197,66,.8);
-      transition: top 1s cubic-bezier(.4,0,.2,1), left 1s cubic-bezier(.4,0,.2,1), opacity 0.5s;
-      opacity: 0; left: 50%; top: 50%; z-index: 10;
+    .legend-item {
+      display: flex; align-items: center; gap: 6px;
+      font-size: .75rem; color: var(--text-dim);
     }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .scatter-axis-label {
+      position: absolute; font-size: .68rem; color: var(--muted); letter-spacing:.04em;
+      text-transform: uppercase;
+    }
+    #axis-label-x { bottom: 44px; left: 50%; transform: translateX(-50%); }
+    #axis-label-y { top: 50%; left: 6px; transform: translateY(-50%) rotate(-90deg); transform-origin: center; }
 
-    .metric-label { font-size: .72rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+    /* K-Means assignment badge */
+    #cluster-assignment {
+      display: none;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); padding: 14px 20px;
+      text-align: center;
+    }
+    .assignment-school {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 600; margin-bottom: 4px;
+    }
+    .assignment-branch { font-size: .8rem; color: var(--text-dim); }
+    .assignment-note   { font-size: .73rem; color: var(--muted); margin-top: 6px; line-height:1.5; }
 
-    /* â”€â”€ Footer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Footer ──────────────────────────────────────────────────────────── */
     footer {
       margin-top: auto; padding: 24px;
       font-size: .75rem; color: var(--muted); text-align: center;
@@ -307,7 +286,7 @@
     footer a { color: var(--accent2); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
 
-    /* â”€â”€ Fade-in animation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    /* ── Fade-in animation ───────────────────────────────────────────────── */
     .fade-in { animation: fadeUp .4s ease both; }
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
@@ -318,19 +297,19 @@
 
 <body>
 
-<!-- â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Header ────────────────────────────────────────────────────────────── -->
 <header>
   <div class="logo-pill">
-    <span>âš—ï¸</span> Philosophical Text Engine
+    <span>⚗️</span> Philosophical Text Engine
   </div>
   <h1>Classify Philosophical Thought</h1>
   <p class="subtitle">
-    A hybrid TF-IDF Â· SVM Â· Neural Network pipeline that maps text to
+    A hybrid TF-IDF · SVM · Neural Network pipeline that maps text to
     its branch and school of philosophy.
   </p>
 </header>
 
-<!-- â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ -->
+<!-- ── Main ──────────────────────────────────────────────────────────────── -->
 <main>
 
   <!-- Input Card -->
@@ -341,7 +320,7 @@
     </div>
 
     <textarea id="text-input"
-              placeholder="Paste or type a philosophical passage hereâ€¦&#10;&#10;e.g. "The will to power is the fundamental drive, the engine beneath all human striving and creationâ€¦""
+              placeholder="Paste or type a philosophical passage here…&#10;&#10;e.g. "The will to power is the fundamental drive, the engine beneath all human striving and creation…""
               maxlength="5000"
               aria-label="Philosophical text input"></textarea>
 
@@ -368,15 +347,15 @@
     <!-- Verdict banner -->
     <div class="verdict fade-in">
       <div class="verdict-model">
-        <div class="model-tag">ðŸ§® SVM (Deterministic)</div>
-        <div class="verdict-label" id="svm-label">â€”</div>
+        <div class="model-tag">🧮 SVM (Deterministic)</div>
+        <div class="verdict-label" id="svm-label">—</div>
         <div class="verdict-sub">Support Vector Machine</div>
       </div>
       <div class="verdict-divider"></div>
       <div class="verdict-model">
-        <div class="model-tag">ðŸ§  Neural Network</div>
-        <div class="verdict-label" id="nn-tier1-label">â€”</div>
-        <div class="verdict-sub" id="nn-tier2-sub">â€”</div>
+        <div class="model-tag">🧠 Neural Network</div>
+        <div class="verdict-label" id="nn-tier1-label">—</div>
+        <div class="verdict-sub" id="nn-tier2-sub">—</div>
       </div>
     </div>
 
@@ -385,61 +364,50 @@
 
       <!-- Tier 1 -->
       <div class="card fade-in">
-        <div class="section-title">Tier 1 â€” Branch Probabilities</div>
+        <div class="section-title">Tier 1 — Branch Probabilities</div>
         <div class="prob-grid" id="t1-probs"></div>
       </div>
 
       <!-- Tier 2 -->
       <div class="card fade-in">
-        <div class="section-title">Tier 2 â€” School of Thought Probabilities</div>
+        <div class="section-title">Tier 2 — School of Thought Probabilities</div>
         <div class="prob-grid" id="t2-probs"></div>
       </div>
 
     </div>
 
-    <!-- Unsupervised Analysis -->
+    <!-- Unsupervised Analysis Card -->
     <div class="card fade-in" id="unsupervised-card">
-      <div class="section-title">Unsupervised Analysis â€” How Your Text Fits Into The Landscape</div>
+      <div class="section-title">Unsupervised Analysis — How the AI Grouped Philosophical Texts</div>
 
-      <!-- Named cluster badges (injected by JS after /meta loads) -->
-      <div style="margin-bottom:18px;">
-        <div style="font-size:.72rem;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:10px;">7 Natural Writing-Style Clusters Found In Training Data</div>
-        <div id="kmeans-legend" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-      </div>
-
-      <!-- Big scatter map -->
-      <div style="font-size:.72rem;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:8px;">Philosophical Style Map (2D)</div>
-      <div style="position:relative;">
-        <canvas id="scatter-canvas" width="800" height="380"
-                style="width:100%;border-radius:var(--radius-sm);background:var(--bg);border:1px solid var(--border);"></canvas>
-        <!-- Axis labels -->
-        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:.7rem;color:var(--muted);">
-          <span>â† More Abstract / Poetic</span>
-          <span style="font-weight:600;color:var(--text-dim);">â† Vocabulary Style â†’</span>
-          <span>Concrete / Analytical â†’</span>
+      <!-- Assignment Badge -->
+      <div id="cluster-assignment">
+        <div class="assignment-school" id="assignment-school-name">—</div>
+        <div class="assignment-branch">Branch: <span id="assignment-branch-name">—</span></div>
+        <div class="assignment-note">
+          Your text falls into this philosophical cluster — meaning its writing style and vocabulary
+          is most similar to texts from this school of thought.
         </div>
       </div>
 
-      <!-- PCA coordinate readout -->
-      <div style="display:flex;gap:24px;margin-top:14px;flex-wrap:wrap;">
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;flex:1;min-width:120px;">
-          <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;">K-Means Cluster</div>
-          <div id="cluster-val" style="font-size:1.1rem;font-weight:700;color:var(--accent2);margin-top:4px;">â€”</div>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;flex:1;min-width:120px;">
-          <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;">Horizontal Position (X)</div>
-          <div id="pca-x-val" style="font-size:1.1rem;font-weight:700;color:var(--text);margin-top:4px;font-variant-numeric:tabular-nums;">â€”</div>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;flex:1;min-width:120px;">
-          <div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;">Vertical Position (Y)</div>
-          <div id="pca-y-val" style="font-size:1.1rem;font-weight:700;color:var(--text);margin-top:4px;font-variant-numeric:tabular-nums;">â€”</div>
-        </div>
+      <!-- Scatter Plot -->
+      <div class="scatter-wrap" style="margin-top:12px; position:relative;">
+        <canvas id="scatter-canvas" width="820" height="440"></canvas>
+        <span class="scatter-axis-label" id="axis-label-x">← More Concrete &nbsp;|&nbsp; More Abstract →</span>
+        <span class="scatter-axis-label" id="axis-label-y">Objective ↑ | ↓ Subjective</span>
       </div>
 
-      <p style="font-size:.78rem;color:var(--muted);margin-top:14px;line-height:1.6;">
-        <strong style="color:var(--text-dim)">Each coloured bubble</strong> is a cluster of philosophical texts that share a similar writing style â€” discovered automatically, without anyone telling the AI what to look for.
-        <strong style="color:var(--gold)">Your golden star â˜…</strong> shows exactly where your passage lands on this map.
-        The closer it sits to a bubble, the more your writing resembles that philosophical school.
+      <!-- Legend -->
+      <div class="scatter-legend" id="scatter-legend"></div>
+
+      <!-- Explanation -->
+      <p style="font-size:.8rem;color:var(--muted);line-height:1.7;margin-top:4px;">
+        <strong style="color:var(--text-dim)">What am I looking at?</strong>
+        Each coloured bubble represents a natural grouping (cluster) that the AI discovered in 17,500
+        philosophical text chunks — <em>without ever being told the labels</em>.
+        The AI found these patterns purely from vocabulary similarity.
+        The <strong style="color:#f5c542">⭐ star</strong> shows where <em>your text</em> lands in this space.
+        The closer it is to a bubble, the more your writing sounds like that school of philosophy.
       </p>
     </div>
 
@@ -452,65 +420,67 @@
   <a href="https://github.com/maffanz47/Philosophical-Engine" target="_blank" rel="noopener">
     @maffanz47
   </a>
-  Â· Philosophical Text Engine Â·
+  · Philosophical Text Engine ·
   <a href="https://github.com/maffanz47/Philosophical-Engine" target="_blank" rel="noopener">
     View on GitHub
   </a>
 </footer>
 
 <script>
-  /* Char counter */
-  const textarea  = document.getElementById('text-input');
-  const charCount = document.getElementById('char-count');
+  /* ── Char counter ─────────────────────────────────────────────────────── */
+  const textarea   = document.getElementById('text-input');
+  const charCount  = document.getElementById('char-count');
   textarea.addEventListener('input', () => {
     charCount.textContent = `${textarea.value.length.toLocaleString()} characters`;
   });
 
-  let _metaCache = null;
-
-  /* Classify â€” fetches /predict and /meta in parallel */
+  /* ── Classify ─────────────────────────────────────────────────────────── */
   async function classify() {
-    const text   = textarea.value.trim();
-    const apiUrl = document.getElementById('api-url').value.trim();
-    const btn    = document.getElementById('classify-btn');
-    const spinner= document.getElementById('spinner');
-    const lbl    = document.getElementById('btn-label');
-    const errBan = document.getElementById('error-banner');
-    const results= document.getElementById('results');
+    const text    = textarea.value.trim();
+    const apiUrl  = document.getElementById('api-url').value.trim();
+    const btn     = document.getElementById('classify-btn');
+    const spinner = document.getElementById('spinner');
+    const lbl     = document.getElementById('btn-label');
+    const errBan  = document.getElementById('error-banner');
+    const results = document.getElementById('results');
 
-    if (!text)           { showError('Please enter a philosophical passage first.'); return; }
-    if (text.length < 20){ showError('Passage must be at least 20 characters.'); return; }
+    // Validation
+    if (!text) { showError('Please enter a philosophical passage first.'); return; }
+    if (text.length < 20) { showError('Passage must be at least 20 characters.'); return; }
 
+    // Loading state
     btn.disabled = true;
     spinner.style.display = 'block';
-    lbl.textContent = 'Classifyingâ€¦';
+    lbl.textContent = 'Classifying…';
     errBan.style.display = 'none';
     results.style.display = 'none';
 
     try {
-      const metaUrl = apiUrl.replace(/\/predict$/, '/meta');
+      // Execute inference
+      const response = await fetch(apiUrl, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ text }),
+      });
 
-      // Run both requests in parallel; reuse meta cache when possible
-      const [predResp, metaData] = await Promise.all([
-        fetch(apiUrl, {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({text})
-        }),
-        _metaCache
-          ? Promise.resolve(_metaCache)
-          : fetch(metaUrl).then(r => r.ok ? r.json() : null).catch(() => null)
-      ]);
-
-      if (!predResp.ok) {
-        const err = await predResp.json().catch(() => ({}));
-        throw new Error(err.detail || `Server returned ${predResp.status}`);
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        throw new Error(err.detail || `Server returned ${response.status}`);
       }
 
-      const data = await predResp.json();
-      if (metaData && !_metaCache) _metaCache = metaData;
+      const data = await response.json();
 
-      renderResults(data, _metaCache);
+      // Fetch /meta (cluster centroids + labels) — cache so we don't refetch
+      if (!_metaCache) {
+        const metaUrl = apiUrl.replace(/\/predict$/, '/meta');
+        try {
+          const mRes = await fetch(metaUrl);
+          _metaCache = await mRes.json();
+          buildLegend(_metaCache);
+        } catch(e) { console.warn('Could not load /meta', e); }
+      }
+
+      renderResults(data);
 
     } catch (e) {
       showError(`Request failed: ${e.message}`);
@@ -521,8 +491,8 @@
     }
   }
 
-  /* Render all results */
-  function renderResults(d, meta) {
+  /* ── Render results ──────────────────────────────────────────────────── */
+  function renderResults(d) {
     const results = document.getElementById('results');
 
     // Verdict banner
@@ -531,195 +501,210 @@
     document.getElementById('nn-tier2-sub').textContent   =
       `School: ${d.nn_tier2.label}  (${(d.nn_tier2.probabilities[d.nn_tier2.label]*100).toFixed(1)}%)`;
 
+    // Probability bars
     renderBars('t1-probs', d.nn_tier1.probabilities, d.nn_tier1.label);
     renderBars('t2-probs', d.nn_tier2.probabilities, d.nn_tier2.label);
 
-    // Unsupervised coordinate readouts
-    const clusterName = meta ? meta.cluster_names[d.kmeans_cluster] : `Cluster ${d.kmeans_cluster}`;
-    document.getElementById('cluster-val').textContent = clusterName;
-    document.getElementById('pca-x-val').textContent   = d.pca_x.toFixed(4);
-    document.getElementById('pca-y-val').textContent   = d.pca_y.toFixed(4);
+    // Store user point for scatter
+    _userPoint = { x: d.pca_x, y: d.pca_y, cluster: d.kmeans_cluster };
 
-    // Draw big scatter map
-    drawScatterMap(meta, d.pca_x, d.pca_y, d.kmeans_cluster);
+    // Show cluster assignment badge
+    const badge = document.getElementById('cluster-assignment');
+    if (_metaCache && _metaCache.cluster_names) {
+      const school = _metaCache.cluster_names[d.kmeans_cluster] || `Cluster ${d.kmeans_cluster}`;
+      const branch = _metaCache.cluster_tier1 ? _metaCache.cluster_tier1[d.kmeans_cluster] : '';
+      document.getElementById('assignment-school-name').textContent = school;
+      document.getElementById('assignment-branch-name').textContent = branch;
+      // Color the school name
+      document.getElementById('assignment-school-name').style.color = getColor(school);
+      badge.style.display = 'block';
+    }
 
     results.style.display = 'flex';
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  /* Canvas Scatter Map */
-  function drawScatterMap(meta, userX, userY, userCluster) {
+  function getColor(name) {
+    return SCHOOL_COLORS[name] || '#94a3b8';
+  }
+
+  /* Draw everything on the canvas */
+  function drawScatter(meta, userPt) {
     const canvas = document.getElementById('scatter-canvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
+    const PAD = 60;  // padding from edge
+
     ctx.clearRect(0, 0, W, H);
 
-    // Grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    // Collect all x/y to auto-scale
+    const allX = meta.cluster_centers_2d.map(c => c[0]);
+    const allY = meta.cluster_centers_2d.map(c => c[1]);
+    if (userPt) { allX.push(userPt.x); allY.push(userPt.y); }
+
+    const minX = Math.min(...allX) - 0.3;
+    const maxX = Math.max(...allX) + 0.3;
+    const minY = Math.min(...allY) - 0.3;
+    const maxY = Math.max(...allY) + 0.3;
+
+    function toCanvasX(v) { return PAD + (v - minX) / (maxX - minX) * (W - 2*PAD); }
+    function toCanvasY(v) { return H - PAD - (v - minY) / (maxY - minY) * (H - 2*PAD); }
+
+    // ── Grid lines ──
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
     ctx.lineWidth = 1;
-    for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-    for (let y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-
-    // Axis lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
-    ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke();
-
-    // Axis text
-    ctx.fillStyle = 'rgba(148,163,184,0.55)';
-    ctx.font = '11px Inter,sans-serif';
-    ctx.textAlign = 'left';   ctx.textBaseline = 'bottom'; ctx.fillText('Abstract', 6, H/2-4);
-    ctx.textAlign = 'right';  ctx.fillText('Concrete', W-4, H/2-4);
-    ctx.textAlign = 'left';   ctx.textBaseline = 'top';    ctx.fillText('Poetic', W/2+4, 4);
-    ctx.textBaseline = 'bottom'; ctx.fillText('Analytical', W/2+4, H-4);
-
-    if (!meta) {
-      drawStar(ctx, W/2, H/2, '#f5c542', 14);
-      return;
+    for (let i = 0; i <= 4; i++) {
+      const gx = PAD + (W - 2*PAD) * i / 4;
+      const gy = PAD + (H - 2*PAD) * i / 4;
+      ctx.beginPath(); ctx.moveTo(gx, PAD); ctx.lineTo(gx, H-PAD); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(PAD, gy); ctx.lineTo(W-PAD, gy); ctx.stroke();
     }
 
-    // Coordinate transform â€” fit all cluster centers + user point with padding
-    const allX = meta.cluster_centers_2d.map(c => c[0]).concat(userX);
-    const allY = meta.cluster_centers_2d.map(c => c[1]).concat(userY);
-    const pad  = 0.14;
-    const xMin = Math.min(...allX), xMax = Math.max(...allX);
-    const yMin = Math.min(...allY), yMax = Math.max(...allY);
-    const xRange = (xMax - xMin) || 0.001, yRange = (yMax - yMin) || 0.001;
-    const toX = v => W*pad + ((v - xMin) / xRange) * W*(1-2*pad);
-    const toY = v => H - (H*pad + ((v - yMin) / yRange) * H*(1-2*pad)); // invert Y
+    // ── Axes ──
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.lineWidth = 1.5;
+    const cx0 = toCanvasX(0), cy0 = toCanvasY(0);
+    if (cx0 > PAD && cx0 < W-PAD) { ctx.beginPath(); ctx.moveTo(cx0, PAD); ctx.lineTo(cx0, H-PAD); ctx.stroke(); }
+    if (cy0 > PAD && cy0 < H-PAD) { ctx.beginPath(); ctx.moveTo(PAD, cy0); ctx.lineTo(W-PAD, cy0); ctx.stroke(); }
 
-    // Legend badges
-    const legend = document.getElementById('kmeans-legend');
-    if (legend) {
-      legend.innerHTML = '';
-      meta.cluster_names.forEach((name, idx) => {
-        const color    = meta.cluster_colors[idx];
-        const isActive = idx === userCluster;
-        const badge    = document.createElement('div');
-        badge.style.cssText = [
-          `display:inline-flex;align-items:center;gap:6px`,
-          `padding:5px 13px;border-radius:999px`,
-          `background:${isActive ? color+'28' : 'var(--surface2)'}`,
-          `border:1.5px solid ${isActive ? color : 'var(--border)'}`,
-          `font-size:.75rem;font-weight:${isActive?700:500}`,
-          `color:${isActive?'#fff':'var(--muted)'}`,
-          `transition:all .3s`
-        ].join(';');
-        badge.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${color};flex-shrink:0;"></span>${name}`;
-        legend.appendChild(badge);
-      });
-    }
-
-    // Cluster bubbles
-    meta.cluster_centers_2d.forEach((center, idx) => {
-      const cx    = toX(center[0]);
-      const cy    = toY(center[1]);
-      const color = meta.cluster_colors[idx];
+    // ── Cluster bubbles ──
+    meta.cluster_centers_2d.forEach((coord, idx) => {
       const name  = meta.cluster_names[idx];
-      const active= idx === userCluster;
-      const r     = active ? 52 : 42;
+      const color = getColor(name);
+      const cx    = toCanvasX(coord[0]);
+      const cy    = toCanvasY(coord[1]);
+      const r     = 34;
 
-      // Glow for active
-      if (active) {
-        const grd = ctx.createRadialGradient(cx, cy, r*0.3, cx, cy, r*1.8);
-        grd.addColorStop(0, color + '33');
-        grd.addColorStop(1, 'transparent');
-        ctx.fillStyle = grd;
-        ctx.beginPath(); ctx.arc(cx, cy, r*1.8, 0, Math.PI*2); ctx.fill();
-      }
+      // Glow
+      const grd = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 1.6);
+      grd.addColorStop(0, color + '33');
+      grd.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(cx, cy, r * 1.6, 0, Math.PI*2);
+      ctx.fillStyle = grd; ctx.fill();
 
-      // Bubble fill
-      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2);
-      ctx.fillStyle = color + (active ? 'bb' : '44');
-      ctx.fill();
-      ctx.strokeStyle = color;
-      ctx.lineWidth   = active ? 3 : 1.5;
-      ctx.stroke();
+      // Circle fill
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = color + '22'; ctx.fill();
+      ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
 
-      // School name inside bubble
-      ctx.fillStyle     = active ? '#fff' : 'rgba(255,255,255,0.85)';
-      ctx.font          = `${active ? 'bold ' : ''}${active ? 12 : 11}px Inter,sans-serif`;
-      ctx.textAlign     = 'center';
-      ctx.textBaseline  = 'middle';
-      // Word-wrap for long names
-      const words = name.split(' ');
-      if (words.length > 1) {
-        ctx.fillText(words[0], cx, cy - 7);
-        ctx.fillText(words.slice(1).join(' '), cx, cy + 7);
-      } else {
-        ctx.fillText(name, cx, cy);
-      }
+      // School name label inside
+      ctx.fillStyle = color;
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(name, cx, cy);
     });
 
-    // Dashed line from user to assigned cluster
-    const nc = meta.cluster_centers_2d[userCluster];
-    ctx.setLineDash([5, 4]);
-    ctx.strokeStyle = 'rgba(245,197,66,0.45)';
-    ctx.lineWidth   = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(toX(userX), toY(userY));
-    ctx.lineTo(toX(nc[0]), toY(nc[1]));
-    ctx.stroke();
-    ctx.setLineDash([]);
+    // ── User star ──
+    if (userPt) {
+      const ux = toCanvasX(userPt.x);
+      const uy = toCanvasY(userPt.y);
+      const pulse = 0.85 + 0.15 * Math.sin(_animFrame * 0.06);
 
-    // User star
-    drawStar(ctx, toX(userX), toY(userY), '#f5c542', 14);
-  }
+      // Outer pulse glow
+      const grd2 = ctx.createRadialGradient(ux, uy, 4, ux, uy, 28 * pulse);
+      grd2.addColorStop(0, 'rgba(245,197,66,0.5)');
+      grd2.addColorStop(1, 'transparent');
+      ctx.beginPath(); ctx.arc(ux, uy, 28 * pulse, 0, Math.PI*2);
+      ctx.fillStyle = grd2; ctx.fill();
 
-  function drawStar(ctx, cx, cy, color, r) {
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.fillStyle  = color;
-    ctx.shadowColor = color;
-    ctx.shadowBlur  = 20;
-    ctx.beginPath();
-    for (let i = 0; i < 5; i++) {
-      const a1 = (i * 4 * Math.PI / 5) - Math.PI/2;
-      const a2 = ((i*4+2) * Math.PI / 5) - Math.PI/2;
-      ctx[i===0 ? 'moveTo':'lineTo'](Math.cos(a1)*r, Math.sin(a1)*r);
-      ctx.lineTo(Math.cos(a2)*(r*0.4), Math.sin(a2)*(r*0.4));
+      // Draw a 5-pointed star
+      ctx.beginPath();
+      for (let i = 0; i < 10; i++) {
+        const angle = (Math.PI / 5) * i - Math.PI / 2;
+        const rad   = i % 2 === 0 ? 12 : 5;
+        const sx = ux + rad * Math.cos(angle);
+        const sy = uy + rad * Math.sin(angle);
+        i === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy);
+      }
+      ctx.closePath();
+      ctx.fillStyle = '#f5c542'; ctx.fill();
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+
+      // "You" label
+      ctx.fillStyle = '#f5c542';
+      ctx.font = 'bold 11px Inter, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+      ctx.fillText('Your Text', ux, uy + 16);
     }
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
   }
 
-  /* Probability bars */
+  /* Animation loop */
+  function animateScatter() {
+    if (_metaCache && _userPoint) {
+      _animFrame++;
+      drawScatter(_metaCache, _userPoint);
+    }
+    requestAnimationFrame(animateScatter);
+  }
+  requestAnimationFrame(animateScatter);
+
+  /* Build legend */
+  function buildLegend(meta) {
+    const legend = document.getElementById('scatter-legend');
+    legend.innerHTML = '';
+    const seen = new Set();
+    meta.cluster_names.forEach(name => {
+      if (seen.has(name)) return;
+      seen.add(name);
+      const item = document.createElement('div');
+      item.className = 'legend-item';
+      item.innerHTML = `<span class="legend-dot" style="background:${getColor(name)}"></span>${name}`;
+      legend.appendChild(item);
+    });
+    // Gold star for user
+    const starItem = document.createElement('div');
+    starItem.className = 'legend-item';
+    starItem.innerHTML = `<span style="font-size:1rem;line-height:1;">⭐</span> Your Text`;
+    legend.appendChild(starItem);
+  }
+
   function renderBars(containerId, probs, topLabel) {
     const container = document.getElementById(containerId);
     container.innerHTML = '';
-    const sorted = Object.entries(probs).sort((a,b) => b[1]-a[1]);
+
+    // Sort descending
+    const sorted = Object.entries(probs).sort((a, b) => b[1] - a[1]);
+
     sorted.forEach(([label, prob]) => {
       const isTop = label === topLabel;
       const pct   = (prob * 100).toFixed(1);
-      const row   = document.createElement('div');
+
+      const row = document.createElement('div');
       row.className = 'prob-row';
       row.innerHTML = `
-        <span class="prob-name" style="${isTop?'color:var(--text);font-weight:600':''}">
-          ${isTop?'&#9658; ':''}${label}
+        <span class="prob-name" style="${isTop ? 'color:var(--text);font-weight:600' : ''}">
+          ${isTop ? '▶ ' : ''}${label}
         </span>
         <div class="prob-bar-track">
-          <div class="prob-bar-fill ${isTop?'top':''}" style="width:0%" data-target="${pct}%"></div>
+          <div class="prob-bar-fill ${isTop ? 'top' : ''}"
+               style="width:0%"
+               data-target="${pct}%">
+          </div>
         </div>
-        <span class="prob-pct" style="${isTop?'color:var(--gold)':''}">${pct}%</span>`;
+        <span class="prob-pct" style="${isTop ? 'color:var(--gold)' : ''}">${pct}%</span>
+      `;
       container.appendChild(row);
     });
+
+    // Animate bars in after DOM paint
     requestAnimationFrame(() => {
-      container.querySelectorAll('.prob-bar-fill').forEach(el => { el.style.width = el.dataset.target; });
+      container.querySelectorAll('.prob-bar-fill').forEach(el => {
+        el.style.width = el.dataset.target;
+      });
     });
   }
 
-  /* Error display */
+  /* ── Error display ────────────────────────────────────────────────────── */
   function showError(msg) {
     const errBan = document.getElementById('error-banner');
-    errBan.textContent = `&#9888; ${msg}`;
+    errBan.textContent = `⚠ ${msg}`;
     errBan.style.display = 'block';
-    errBan.scrollIntoView({ behavior:'smooth' });
+    errBan.scrollIntoView({ behavior: 'smooth' });
   }
 
-  /* Ctrl+Enter shortcut */
+  /* ── Allow Ctrl+Enter to submit ──────────────────────────────────────── */
   textarea.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') classify();
   });
@@ -727,4 +712,3 @@
 
 </body>
 </html>
-
