@@ -2,7 +2,7 @@
 train.py — Model Training Script
 
 Run this script ONCE to scrape the Gutenberg texts, train all models
-(SVM, MLP, Bi-LSTM, K-Means, PCA), and save the artifacts to disk.
+(SVM, MLP, K-Means, PCA), and save the artifacts to disk.
 """
 
 from engine_core import PhilosophyEngine

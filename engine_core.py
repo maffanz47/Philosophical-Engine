@@ -17,7 +17,7 @@ from taxonomy import (
     IDX_TO_TIER1, IDX_TO_TIER2,
 )
 from ingestion import ingest_all
-from preprocessing import clean_and_lemmatize, build_tfidf, VocabEncoder
+from preprocessing import clean_and_lemmatize, build_tfidf
 from models_supervised import (
     train_svm, HierarchicalMLP, train_nn, predict_nn,
 )
@@ -34,7 +34,7 @@ class PhilosophyEngine:
 
     def __init__(self):
         self.tfidf_vec = None   # fitted TfidfVectorizer
-        self.vocab_enc = None   # VocabEncoder (dense sequences)
+
         self.svm       = None   # fitted SVC
         self.mlp       = None   # trained HierarchicalMLP
         self.kmeans    = None   # fitted KMeans
@@ -58,10 +58,7 @@ class PhilosophyEngine:
         # Sparse TF-IDF (SVM, K-Means, PCA)
         self.X_tfidf, self.tfidf_vec = build_tfidf(self.clean_texts)
 
-        # Dense vocab (Embedding → LSTM / MLP-dense path)
-        self.vocab_enc = VocabEncoder(max_vocab=10000).fit(self.clean_texts)
-        self.X_seq     = self.vocab_enc.encode_batch(self.clean_texts, max_len=200)
-        print(f"  Dense sequences: {self.X_seq.shape}")
+
 
     # ── Phase 3 ───────────────────────────────────────────────────────────
     def validate(self):
@@ -82,7 +79,6 @@ class PhilosophyEngine:
 
         # Shared tensors
         X_dense = torch.tensor(self.X_tfidf.toarray(), dtype=torch.float32)
-        X_seq_t = torch.tensor(self.X_seq, dtype=torch.long)
         y1_t    = torch.tensor(y1, dtype=torch.long)
         y2_t    = torch.tensor(y2, dtype=torch.long)
 
@@ -119,7 +115,6 @@ class PhilosophyEngine:
         import os, joblib
         os.makedirs(path, exist_ok=True)
         joblib.dump(self.tfidf_vec, f"{path}/tfidf_vec.pkl")
-        joblib.dump(self.vocab_enc, f"{path}/vocab_enc.pkl")
         joblib.dump(self.svm, f"{path}/svm.pkl")
         joblib.dump(self.kmeans, f"{path}/kmeans.pkl")
         joblib.dump(self.pca, f"{path}/pca.pkl")
@@ -138,7 +133,6 @@ class PhilosophyEngine:
         
         print(f"\n  [↓] Loading models from '{path}/' ...")
         self.tfidf_vec = joblib.load(f"{path}/tfidf_vec.pkl")
-        self.vocab_enc = joblib.load(f"{path}/vocab_enc.pkl")
         self.svm       = joblib.load(f"{path}/svm.pkl")
         self.kmeans    = joblib.load(f"{path}/kmeans.pkl")
         self.pca       = joblib.load(f"{path}/pca.pkl")

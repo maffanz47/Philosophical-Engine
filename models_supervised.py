@@ -16,7 +16,6 @@ Changes vs v5 (anti-Idealism-Singularity update):
 Math Summary:
   SVM:   min ½‖w‖²  s.t. yᵢ(w·φ(xᵢ)+b) ≥ 1  (RBF kernel, balanced weights)
   MLP:   bottleneck backbone → dual linear heads
-  LSTM:  Bi-LSTM encoder    → dual linear heads
   Loss:  L_t1  = CE(logits_t1, y1)
          L_t2  = CE(logits_t2, y2, weight=T2_CLASS_W)
          L_total = L_t1 + L_t2
@@ -138,43 +137,7 @@ class HierarchicalMLP(nn.Module):
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-#  3. Hierarchical Bi-LSTM — Embedding + BiLSTM + conditional dual heads
-# ═══════════════════════════════════════════════════════════════════════════
-
-class HierarchicalBiLSTM(nn.Module):
-    """
-    Embedding(vocab, 128)
-    → Bi-LSTM(hidden=64, layers=2)   output: hidden_size*2 = 128 (bidirectional)
-    → concat [forward_h, backward_h] → 128-dim vector
-    Head-1: Linear(128→N_T1)
-    Head-2: Linear(128→N_T2)
-    """
-
-    def __init__(self, vocab_size: int, embed_dim: int = 128, hidden: int = 64):
-        super().__init__()
-        self.embed = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
-        self.lstm  = nn.LSTM(
-            embed_dim, hidden,
-            num_layers=2,
-            batch_first=True,
-            bidirectional=True,
-            dropout=0.3,
-        )
-        self.dropout = nn.Dropout(p=0.4)
-        self.head_t1 = nn.Linear(hidden * 2, N_T1)
-        self.head_t2 = nn.Linear(hidden * 2, N_T2)
-
-    def forward(self, x):
-        e = self.embed(x)                        # [B, L, embed_dim]
-        _, (h_n, _) = self.lstm(e)               # h_n: [4, B, 64]  (2 layers × 2 dirs)
-        # Take the last layer's forward & backward states
-        h = torch.cat([h_n[-2], h_n[-1]], dim=1) # [B, 128]
-        h = self.dropout(h)
-        return self.head_t1(h), self.head_t2(h)
-
-
-# ═══════════════════════════════════════════════════════════════════════════
-#  4. Shared Training Loop (MLP & Bi-LSTM)
+#  3. Training Loop (MLP)
 # ═══════════════════════════════════════════════════════════════════════════
 
 def train_nn(
