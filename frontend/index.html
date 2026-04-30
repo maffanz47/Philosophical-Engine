@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Philosophical Engine Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar glass">
+        <h2>✨ PhiloEngine</h2>
+        <ul>
+            <li class="active" onclick="showTab('dashboard')">Dashboard</li>
+            <li onclick="showTab('classify')">School Classifier</li>
+            <li onclick="showTab('regression')">Influence Predictor</li>
+            <li onclick="showTab('recommend')">Recommender</li>
+            <li onclick="showTab('clusters')">Thought Clusters</li>
+            <li onclick="showTab('pipeline')">Pipeline Runner</li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <h1>System Overview</h1>
+            <p class="subtitle">Real-time metrics and model health tracking.</p>
+            <div class="cards">
+                <div class="card glass" id="health-card">
+                    <h3>API Health</h3>
+                    <p>Loading...</p>
+                </div>
+                <div class="card glass" id="models-card">
+                    <h3>Loaded Models</h3>
+                    <p>Loading...</p>
+                </div>
+            </div>
+            <div class="chart-container glass">
+                <canvas id="sentimentChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Classify Tab -->
+        <div id="classify" class="tab-content">
+            <h1>School Classifier</h1>
+            <p class="subtitle">Identify the philosophical school of thought from a given text.</p>
+            <textarea id="classifyText" rows="5" placeholder="Enter philosophical text here (e.g. 'I think therefore I am')..."></textarea>
+            <button onclick="classifyText()">Classify Text</button>
+            <div id="classifyResult" class="result-box glass"></div>
+        </div>
+
+        <!-- Regression Tab -->
+        <div id="regression" class="tab-content">
+            <h1>Influence Predictor</h1>
+            <p class="subtitle">Predict the historical influence and impact of a philosophical passage.</p>
+            <textarea id="regressText" rows="5" placeholder="Enter full text passage..."></textarea>
+            <input type="number" id="regressLen" placeholder="Average Sentence Length" value="15">
+            <input type="number" id="regressVocab" placeholder="Vocabulary Richness (0.0 to 1.0)" step="0.01" value="0.2">
+            <button onclick="predictInfluence()">Predict Influence</button>
+            <div id="regressionResult" class="result-box glass"></div>
+        </div>
+
+        <!-- Recommend Tab -->
+        <div id="recommend" class="tab-content">
+            <h1>Recommender System</h1>
+            <p class="subtitle">Discover similar philosophical texts based on content and collaborative filtering.</p>
+            <input type="text" id="recommendQuery" placeholder="Enter book ID or text snippet...">
+            <button onclick="getRecommendations()">Get Recommendations</button>
+            <div id="recommendResult" class="result-box glass"></div>
+        </div>
+
+        <!-- Clusters Tab -->
+        <div id="clusters" class="tab-content">
+            <h1>Thought Clusters</h1>
+            <p class="subtitle">Explore unsupervised clusters of philosophical concepts.</p>
+            <button onclick="loadClusters()">Load Clusters</button>
+            <div id="clustersResult" class="result-box glass"></div>
+        </div>
+
+        <!-- Pipeline Tab -->
+        <div id="pipeline" class="tab-content">
+            <h1>Pipeline Runner</h1>
+            <p class="subtitle">Trigger and monitor the end-to-end MLOps pipeline (Scraping &rarr; Preprocessing &rarr; Training &rarr; Eval).</p>
+            
+            <button id="runPipelineBtn" class="btn-danger" onclick="runPipeline()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Run Pipeline
+            </button>
+            
+            <div class="terminal-container glass">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
+                    </div>
+                    <div id="pipelineStatus" class="pipeline-status-badge">Idle</div>
+                </div>
+                <div id="pipelineLogViewer" class="terminal-body">
+                    <div class="terminal-line info">Ready to start pipeline...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

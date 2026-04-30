@@ -1,27 +1,16 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException
+from typing import Dict, Any
+from ml.timeseries.trend_analyzer import get_timeseries_sentiment
 
-from ml.timeseries.trend_analyzer import sentiment_forecast as sentiment_forecast_stub
+router = APIRouter(prefix="/timeseries", tags=["Time Series"])
 
-router = APIRouter(prefix="/timeseries", tags=["timeseries"])
-
-
-class SentimentForecastItem(BaseModel):
-    decade: int
-    avg_sentiment: float
-    forecast_next_decade: float
-
-
-@router.get("/sentiment", response_model=list[SentimentForecastItem])
-def sentiment_forecast() -> list[SentimentForecastItem]:
-    """
-    Phase 1:
-      - Returns forecast items when artifacts exist (currently stub returns []).
-    """
-    results = sentiment_forecast_stub()
-
-    items: list[SentimentForecastItem] = []
-    for r in results:
-        if isinstance(r, dict):
-            items.append(SentimentForecastItem(**r))
-    return items
+@router.get("/sentiment", response_model=Dict[str, Any])
+async def get_sentiment_trends():
+    """Returns decade-level sentiment trends and anomalies."""
+    try:
+        data = get_timeseries_sentiment()
+        if "error" in data:
+            raise HTTPException(status_code=500, detail=data["error"])
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

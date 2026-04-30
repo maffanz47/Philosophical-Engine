@@ -1,29 +1,19 @@
-[tool.black]
-line-length = 100
-target-version = ["py311"]
-include = '\.pyi?$'
-exclude = '''
-/(
-  \.git
-| \.venv
-| build
-| dist
-)/
-'''
+[tool.poetry]
+name = "philosophical-engine"
+version = "0.1.0"
+description = "From ancient text to machine insight — classifying, recommending, and forecasting human philosophy."
+authors = ["Author <author@example.com>"]
 
 [tool.ruff]
 line-length = 100
 target-version = "py311"
-select = ["E", "F", "I", "B", "UP", "SIM", "S", "N"]
-ignore = ["E501"]
 
-[tool.ruff.lint]
-per-file-ignores = {}
-
-[tool.ruff.format]
-quote-style = "double"
+[tool.black]
+line-length = 100
+target-version = ['py311']
 
 [tool.pytest.ini_options]
-minversion = "8.0"
-addopts = "-ra -q"
-testpaths = ["tests"]
+addopts = "-v --cov=app --cov=ml --cov-report=xml"
+testpaths = [
+    "tests",
+]

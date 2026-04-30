@@ -1,10 +1,13 @@
-version: 2
 deployments:
   - name: philosophical-engine-daily
-    tag: daily
+    version: "1.0"
+    tags: ["mlops", "daily"]
+    description: "Daily run of the Philosophical Engine pipeline"
     schedule:
-      cron: "0 2 * * *"
+      cron: "0 2 * * *" # Daily at 02:00 UTC
       timezone: "UTC"
-    entrypoint: "pipeline.philosophical_pipeline:philosophical_pipeline"
-    parameters: {}
-    work_queue_name: "default"
+    entrypoint: "pipeline/philosophical_pipeline.py:philosophical_pipeline"
+    work_pool:
+      name: default-agent-pool
+    parameters:
+      max_books: 500

@@ -1,8 +1,12 @@
+from typing import List, Optional
 from pydantic import BaseModel
 
-
-class RecommendItem(BaseModel):
+class RecommendationResponseItem(BaseModel):
+    gutenberg_id: int
     title: str
-    author: str | None = None
+    author: str
     similarity: float
-    reason: str | None = None
+    reason: str
+
+class RecommendationResponse(BaseModel):
+    recommendations: List[RecommendationResponseItem]

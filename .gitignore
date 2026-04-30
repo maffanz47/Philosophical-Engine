@@ -1,45 +1,67 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.pyd
-*.so
-*.egg-info/
-.venv/
-venv/
+*$py.class
 
-# Virtualenv / tooling
-.mypy_cache/
-.pytest_cache/
-.ruff_cache/
-.coverage
-.coverage.*
-htmlcov/
-dist/
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # Environment
 .env
-.env.*
-!.env.example
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-# Data / artifacts
-data/raw/*
-data/processed/*
-models/*
-reports/*
-notebooks/*.ipynb
-
-# DeepChecks reports
-deepchecks/
-reports/deepchecks/*
-
-# Prefect
-prefect/
-*.sqlite
-
-# Logs
+# Logs and databases
 *.log
+*.sqlite
+*.sqlite3
 
-# OS
+# Project specific
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+models/*
+!models/.gitkeep
+reports/deepchecks/*
+!reports/deepchecks/.gitkeep
+
+# Testing / coverage
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
 .DS_Store
-Thumbs.db

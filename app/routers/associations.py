@@ -1,29 +1,16 @@
-from fastapi import APIRouter
-from pydantic import BaseModel
+from fastapi import APIRouter, HTTPException, Query
+from typing import List, Dict, Any
+from ml.association.concept_miner import get_associations
 
-from ml.association.concept_miner import mine_associations as mine_associations_stub
+router = APIRouter(prefix="/associations", tags=["Association Rules"])
 
-router = APIRouter(prefix="/associations", tags=["associations"])
-
-
-class AssociationRuleItem(BaseModel):
-    antecedent: list[str]
-    consequent: list[str]
-    support: float
-    confidence: float
-    lift: float
-
-
-@router.get("/", response_model=list[AssociationRuleItem])
-def associations(concept: str) -> list[AssociationRuleItem]:
-    """
-    Phase 1:
-      - Returns association rules when artifacts exist (currently stub returns []).
-    """
-    results = mine_associations_stub(concept)
-
-    items: list[AssociationRuleItem] = []
-    for r in results:
-        if isinstance(r, dict):
-            items.append(AssociationRuleItem(**r))
-    return items
+@router.get("/", response_model=List[Dict[str, Any]])
+async def get_concept_associations(concept: str = Query(..., description="Concept to search rules for")):
+    """Returns association rules containing the given concept."""
+    try:
+        data = get_associations(concept)
+        if data and "error" in data[0]:
+            raise HTTPException(status_code=500, detail=data[0]["error"])
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -1,19 +1,14 @@
-from fastapi import APIRouter
-
-from app.schemas.regression import InfluencePredictRequest, InfluencePredictResponse
+from fastapi import APIRouter, HTTPException
+from app.schemas.regression import RegressionRequest, RegressionResponse
 from ml.regression.influence_predictor import predict_influence
 
-router = APIRouter(prefix="/regression", tags=["regression"])
+router = APIRouter(prefix="/regression", tags=["Regression"])
 
-
-@router.post("/influence", response_model=InfluencePredictResponse)
-def predict_influence_endpoint(body: InfluencePredictRequest) -> InfluencePredictResponse:
-    """
-    Phase 1:
-      - If no trained artifact exists, returns 0.0.
-      - Otherwise uses the latest saved regression model artifact.
-
-    Phase 2+ will construct the full feature vector (structured + TF-IDF).
-    """
-    score = predict_influence({"text": body.text})
-    return InfluencePredictResponse(influence_score=score)
+@router.post("/", response_model=RegressionResponse)
+async def predict_influence_score(request: RegressionRequest):
+    """Predict the influence score (normalized log of downloads) of a text."""
+    try:
+        score = predict_influence(request.model_dump())
+        return {"influence_score": score}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

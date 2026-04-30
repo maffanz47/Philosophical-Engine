@@ -1,43 +1,40 @@
-name: Train
+name: Train Models
 
 on:
   push:
-    branches: [main]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   train:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e .
-
-      - name: Run Prefect pipeline
-        run: python -m pipeline.philosophical_pipeline
-
-      - name: Upload models as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: models
-          path: models/
-          retention-days: 30
-
-      - name: Create GitHub Release
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Get the latest model version
-          MODEL_VERSION=$(date +%Y%m%d%H%M%S)
-          echo "MODEL_VERSION=$MODEL_VERSION" >> $GITHUB_ENV
-          
-          # Create a tag
-          git tag -a v$MODEL_VERSION -m "Model version $MODEL_VERSION"
-          git push origin v$MODEL_VERSION
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Prefect Pipeline
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      run: |
+        python -m pipeline.philosophical_pipeline
+    - name: Upload Models Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: trained-models
+        path: models/
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        draft: false
+        prerelease: false

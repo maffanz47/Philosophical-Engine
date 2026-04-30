@@ -1,123 +1,299 @@
-from __future__ import annotations
-
-import json
 import os
+import json
 import time
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any
-
 import joblib
+import logging
+from pathlib import Path
+from typing import Dict, Any, List, Optional
 
+import numpy as np
+import pandas as pd
+import mlflow
+import mlflow.sklearn
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, f1_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+from xgboost import XGBClassifier
+import torch
+from transformers import DistilBertTokenizer, DistilBertForSequenceClassification, Trainer, TrainingArguments
+from scipy.sparse import hstack
 
-SCHOOLS: list[str] = [
-    "Empiricism",
-    "Rationalism",
-    "Existentialism",
-    "Stoicism",
-    "Idealism",
-    "Pragmatism",
-    "Other",
-]
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
 
+# Constants
+DATA_PATH = Path("data/processed/philosophy_corpus.csv")
+MODEL_DIR = Path("models/classification")
+MODEL_DIR.mkdir(parents=True, exist_ok=True)
+MLFLOW_EXPERIMENT = "philosophical-engine-classification"
 
-@dataclass(frozen=True)
-class SchoolPredictResult:
-    school: str
-    confidence: float
-    top3: list[str]
+# Global loaded model for inference
+_best_model = None
+_vectorizer = None
+_label_encoder = None
+_is_bert = False
+_tokenizer = None
 
+def load_data() -> pd.DataFrame:
+    if not DATA_PATH.exists():
+        logger.warning(f"Data file not found at {DATA_PATH}. Returning empty.")
+        return pd.DataFrame()
+    return pd.read_csv(DATA_PATH)
 
-def _default_result() -> SchoolPredictResult:
-    return SchoolPredictResult(school="Other", confidence=0.0, top3=["Other"])
+def plot_confusion_matrix(y_true, y_pred, classes, title, save_path):
+    cm = confusion_matrix(y_true, y_pred)
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=classes, yticklabels=classes)
+    plt.title(title)
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.tight_layout()
+    plt.savefig(save_path)
+    plt.close()
 
+class ClassificationDataset(torch.utils.data.Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
 
-def _try_load_artifact(artifact_path: Path) -> Any | None:
-    if not artifact_path.exists():
-        return None
-    try:
-        return joblib.load(artifact_path)
-    except Exception:
-        return None
+    def __getitem__(self, idx):
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        item['labels'] = torch.tensor(self.labels[idx])
+        return item
 
+    def __len__(self):
+        return len(self.labels)
 
-def _latest_model_path(models_dir: Path) -> Path | None:
-    if not models_dir.exists():
-        return None
-    candidates = sorted(models_dir.glob("school_classifier_v*.pkl"), reverse=True)
-    return candidates[0] if candidates else None
+def train_models():
+    df = load_data()
+    if df.empty or 'school_label' not in df.columns:
+        logger.error("Insufficient data to train classification models.")
+        return
 
+    # Drop missing text
+    df = df.dropna(subset=['full_text'])
+    
+    # Stratified sampling for robust train/test split if possible
+    # Just in case some classes are very small, we'll try standard split first
+    X_text = df['full_text'].astype(str).tolist()
+    X_num = df[['avg_sentence_length', 'vocab_richness', 'sentiment_polarity']].fillna(0).values
+    
+    le = LabelEncoder()
+    y = le.fit_transform(df['school_label'])
+    
+    X_train_text, X_test_text, X_train_num, X_test_num, y_train, y_test = train_test_split(
+        X_text, X_num, y, test_size=0.2, random_state=42, stratify=y
+    )
 
-def predict_school(text: str) -> dict[str, Any]:
-    """
-    Predict philosophical school for an input text.
+    # TF-IDF Vectorization
+    tfidf = TfidfVectorizer(max_features=10000, ngram_range=(1,2))
+    X_train_tfidf = tfidf.fit_transform(X_train_text)
+    X_test_tfidf = tfidf.transform(X_test_text)
+    
+    # Combine TF-IDF with structured features
+    X_train_combined = hstack([X_train_tfidf, X_train_num]).tocsr()
+    X_test_combined = hstack([X_test_tfidf, X_test_num]).tocsr()
 
-    Phase 1 behavior:
-      - If no trained artifact exists, returns a safe default.
-      - In later phases, this will load TF-IDF + structured-feature models
-        and (optionally) a fine-tuned DistilBERT classifier.
+    mlflow.set_experiment(MLFLOW_EXPERIMENT)
+    best_f1 = 0
+    best_model_name = ""
+    timestamp = int(time.time())
 
-    Args:
-        text: Free-form input text.
+    # 1. Baseline: Logistic Regression
+    with mlflow.start_run(run_name=f"LogisticRegression_{timestamp}"):
+        logger.info("Training Logistic Regression...")
+        lr = LogisticRegression(C=1.0, max_iter=1000, random_state=42)
+        lr.fit(X_train_combined, y_train)
+        
+        preds = lr.predict(X_test_combined)
+        acc = accuracy_score(y_test, preds)
+        f1 = f1_score(y_test, preds, average='macro')
+        
+        mlflow.log_params({"C": 1.0, "max_iter": 1000, "model": "LogisticRegression"})
+        mlflow.log_metrics({"accuracy": acc, "f1_macro": f1})
+        
+        report = classification_report(y_test, preds, target_names=le.classes_, output_dict=True)
+        with open("reports/lr_classification_report.json", "w") as f:
+            json.dump(report, f)
+        mlflow.log_artifact("reports/lr_classification_report.json")
+        
+        cm_path = "reports/lr_confusion_matrix.png"
+        plot_confusion_matrix(y_test, preds, le.classes_, "LR Confusion Matrix", cm_path)
+        mlflow.log_artifact(cm_path)
+        
+        mlflow.sklearn.log_model(lr, artifact_path="model")
+        
+        if f1 > best_f1:
+            best_f1 = f1
+            best_model_name = "LogisticRegression"
+            joblib.dump({"model": lr, "vectorizer": tfidf, "label_encoder": le, "is_bert": False}, 
+                        MODEL_DIR / f"school_classifier_v{timestamp}.pkl")
 
-    Returns:
-        dict with {school, confidence, top3}.
-    """
-    models_dir = Path("models/classification")
-    model_path = _latest_model_path(models_dir)
+    # 2. Improved: XGBoost
+    with mlflow.start_run(run_name=f"XGBoost_{timestamp}"):
+        logger.info("Training XGBoost...")
+        xgb = XGBClassifier(use_label_encoder=False, eval_metric='mlogloss', random_state=42)
+        xgb.fit(X_train_combined, y_train)
+        
+        preds = xgb.predict(X_test_combined)
+        acc = accuracy_score(y_test, preds)
+        f1 = f1_score(y_test, preds, average='macro')
+        
+        mlflow.log_params({"model": "XGBoost"})
+        mlflow.log_metrics({"accuracy": acc, "f1_macro": f1})
+        
+        report = classification_report(y_test, preds, target_names=le.classes_, output_dict=True)
+        with open("reports/xgb_classification_report.json", "w") as f:
+            json.dump(report, f)
+        mlflow.log_artifact("reports/xgb_classification_report.json")
+        
+        cm_path = "reports/xgb_confusion_matrix.png"
+        plot_confusion_matrix(y_test, preds, le.classes_, "XGBoost Confusion Matrix", cm_path)
+        mlflow.log_artifact(cm_path)
+        
+        mlflow.xgboost.log_model(xgb, artifact_path="model")
+        
+        if f1 > best_f1:
+            best_f1 = f1
+            best_model_name = "XGBoost"
+            joblib.dump({"model": xgb, "vectorizer": tfidf, "label_encoder": le, "is_bert": False}, 
+                        MODEL_DIR / f"school_classifier_v{timestamp}.pkl")
 
-    if model_path is None:
-        return _default_result().__dict__
+    # 3. Advanced: DistilBERT
+    # Note: Training BERT on full texts takes very long. We truncate aggressively for demonstration.
+    with mlflow.start_run(run_name=f"DistilBERT_{timestamp}"):
+        logger.info("Training DistilBERT...")
+        try:
+            tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+            bert_model = DistilBertForSequenceClassification.from_pretrained('distilbert-base-uncased', num_labels=len(le.classes_))
+            
+            # Truncate to first 512 tokens
+            train_encodings = tokenizer(X_train_text, truncation=True, padding=True, max_length=512)
+            test_encodings = tokenizer(X_test_text, truncation=True, padding=True, max_length=512)
+            
+            train_dataset = ClassificationDataset(train_encodings, y_train)
+            test_dataset = ClassificationDataset(test_encodings, y_test)
+            
+            training_args = TrainingArguments(
+                output_dir='./results',
+                num_train_epochs=3,
+                per_device_train_batch_size=8,
+                per_device_eval_batch_size=16,
+                warmup_steps=50,
+                weight_decay=0.01,
+                logging_dir='./logs',
+                logging_steps=10,
+                evaluation_strategy="epoch"
+            )
+            
+            trainer = Trainer(
+                model=bert_model,
+                args=training_args,
+                train_dataset=train_dataset,
+                eval_dataset=test_dataset,
+                compute_metrics=lambda p: {
+                    "accuracy": accuracy_score(p.label_ids, np.argmax(p.predictions, axis=1)),
+                    "f1_macro": f1_score(p.label_ids, np.argmax(p.predictions, axis=1), average='macro')
+                }
+            )
+            
+            trainer.train()
+            
+            # Evaluation
+            preds_output = trainer.predict(test_dataset)
+            preds = np.argmax(preds_output.predictions, axis=1)
+            
+            acc = accuracy_score(y_test, preds)
+            f1 = f1_score(y_test, preds, average='macro')
+            
+            mlflow.log_params({"epochs": 3, "model": "DistilBERT"})
+            mlflow.log_metrics({"accuracy": acc, "f1_macro": f1})
+            
+            report = classification_report(y_test, preds, target_names=le.classes_, output_dict=True)
+            with open("reports/bert_classification_report.json", "w") as f:
+                json.dump(report, f)
+            mlflow.log_artifact("reports/bert_classification_report.json")
+            
+            cm_path = "reports/bert_confusion_matrix.png"
+            plot_confusion_matrix(y_test, preds, le.classes_, "DistilBERT Confusion Matrix", cm_path)
+            mlflow.log_artifact(cm_path)
+            
+            mlflow.pytorch.log_model(bert_model, artifact_path="model")
+            
+            if f1 > best_f1:
+                best_f1 = f1
+                best_model_name = "DistilBERT"
+                # Save BERT model
+                bert_save_path = MODEL_DIR / f"school_classifier_bert_v{timestamp}"
+                bert_model.save_pretrained(bert_save_path)
+                tokenizer.save_pretrained(bert_save_path)
+                joblib.dump({"model_path": str(bert_save_path), "label_encoder": le, "is_bert": True}, 
+                            MODEL_DIR / f"school_classifier_v{timestamp}.pkl")
+                
+        except Exception as e:
+            logger.error(f"DistilBERT training failed: {e}")
 
-    # Expecting a joblib dict with keys: "model", "tfidf", "structured_scaler" (later)
-    artifact = _try_load_artifact(model_path)
-    if artifact is None:
-        return _default_result().__dict__
+    logger.info(f"Training complete. Best model: {best_model_name} with F1-macro: {best_f1:.4f}")
 
-    model = artifact.get("model")
-    tfidf = artifact.get("tfidf")
+def load_best_model():
+    global _best_model, _vectorizer, _label_encoder, _is_bert, _tokenizer
+    if _best_model is not None:
+        return # Already loaded
+        
+    models = list(MODEL_DIR.glob("school_classifier_v*.pkl"))
+    if not models:
+        logger.warning("No trained classification model found.")
+        return
+        
+    # Load the latest model
+    latest_model_path = max(models, key=os.path.getctime)
+    data = joblib.load(latest_model_path)
+    
+    _label_encoder = data['label_encoder']
+    _is_bert = data['is_bert']
+    
+    if _is_bert:
+        model_path = data['model_path']
+        _tokenizer = DistilBertTokenizer.from_pretrained(model_path)
+        _best_model = DistilBertForSequenceClassification.from_pretrained(model_path)
+        _best_model.eval()
+    else:
+        _best_model = data['model']
+        _vectorizer = data['vectorizer']
 
-    if model is None or tfidf is None:
-        return _default_result().__dict__
+def predict_school(text: str, features_num: Optional[List[float]] = None) -> Dict[str, Any]:
+    load_best_model()
+    if _best_model is None:
+        return {"error": "Model not loaded."}
+        
+    if _is_bert:
+        inputs = _tokenizer(text, truncation=True, padding=True, max_length=512, return_tensors="pt")
+        with torch.no_grad():
+            outputs = _best_model(**inputs)
+        probs = torch.nn.functional.softmax(outputs.logits, dim=-1).numpy()[0]
+    else:
+        if features_num is None:
+            # If no structured features provided, pad with zeros (assuming avg_sentence_length, vocab_richness, sentiment_polarity)
+            features_num = [0.0, 0.0, 0.0]
+        
+        X_tfidf = _vectorizer.transform([text])
+        X_combined = hstack([X_tfidf, np.array([features_num])]).tocsr()
+        probs = _best_model.predict_proba(X_combined)[0]
+        
+    # Get top 3
+    top3_idx = np.argsort(probs)[-3:][::-1]
+    top3 = [{"school": _label_encoder.inverse_transform([i])[0], "confidence": float(probs[i])} for i in top3_idx]
+    
+    return {
+        "school": top3[0]["school"],
+        "confidence": top3[0]["confidence"],
+        "top3": top3
+    }
 
-    # Structured features will be added in Phase 2+.
-    # For now use TF-IDF features only.
-    try:
-        X = tfidf.transform([text])
-        proba = model.predict_proba(X)[0]
-        top_idx = proba.argsort()[::-1][:3]
-        top3 = [SCHOOLS[int(i)] if int(i) < len(SCHOOLS) else "Other" for i in top_idx]
-        best_i = int(top_idx[0])
-        best_school = SCHOOLS[best_i] if best_i < len(SCHOOLS) else "Other"
-        best_conf = float(proba[best_i])
-        return {"school": best_school, "confidence": best_conf, "top3": top3}
-    except Exception:
-        return _default_result().__dict__
-
-
-def train_school_classifier(df: "Any") -> None:
-    """
-    Train school classifiers (Phase 2+ implementation).
-
-    This function will:
-      - derive structured features and TF-IDF vectors
-      - train Logistic Regression, XGBoost, and DistilBERT
-      - select best by F1-macro
-      - log metrics and artifacts to MLflow
-      - save best model to models/classification/school_classifier_v{timestamp}.pkl
-
-    Args:
-        df: Input DataFrame containing at least columns:
-            - full_text (str)
-            - avg_sentence_length (float)
-            - vocab_richness (float)
-            - sentiment_polarity (float)
-            - named_entity_count (int)
-            - top_concepts (list[str]) OR compatible serialized form
-            - era_label (str)
-            - school_label (str)
-
-    Notes:
-        Phase 1 scaffolding only; raise to make it explicit when called.
-    """
-    raise NotImplementedError("Phase 1: training will be implemented in Phase 2+.")
+if __name__ == "__main__":
+    # If run directly, try to train
+    train_models()

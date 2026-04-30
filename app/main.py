@@ -1,154 +1,154 @@
-from __future__ import annotations
-
-import os
 import time
 from contextlib import asynccontextmanager
-from typing import Any
-
-import structlog
 from fastapi import FastAPI, Request
-from fastapi.exceptions import RequestValidationError
-from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+import structlog
 
-from app.routers.associations import router as associations_router
-from app.routers.classify import router as classify_router
-from app.routers.clusters import router as clusters_router
-from app.routers.embeddings import router as embeddings_router
-from app.routers.recommend import router as recommend_router
-from app.routers.regression import router as regression_router
-from app.routers.timeseries import router as timeseries_router
+# Routers
+from app.routers import classify, regression, embeddings, recommend, timeseries, clusters, associations
 
+# Preload Models
+from ml.classification.school_classifier import load_best_model as load_classifier
+from ml.regression.influence_predictor import load_best_model as load_regressor
+from ml.recommendation.recommender import load_resources as load_recommender
 
-def _configure_logging() -> None:
-    log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-    structlog.configure(
-        processors=[
-            structlog.processors.TimeStamper(fmt="iso"),
-            structlog.stdlib.add_log_level,
-            structlog.processors.StackInfoRenderer(),
-            structlog.processors.format_exc_info,
-            structlog.processors.JSONRenderer(),
-        ],
-        wrapper_class=structlog.make_filtering_bound_logger(log_level),
-        cache_logger_on_first_use=True,
-    )
-
-
-def _build_app_state() -> dict[str, Any]:
-    # Phase 1: no trained models yet. Later phases will load ML artifacts here.
-    return {
-        "models_loaded": [],
-        "model_metadata": {},
-        "start_time_monotonic": time.monotonic(),
-    }
-
+logger = structlog.get_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    _configure_logging()
-    app.state.philosophical_engine = _build_app_state()
-    logger = structlog.get_logger()
-
-    logger.info("lifespan_start", models_loaded=app.state.philosophical_engine["models_loaded"])
-    try:
-        yield
-    finally:
-        logger.info("lifespan_end")
-
+    # Startup
+    logger.info("Loading models...")
+    load_classifier()
+    load_regressor()
+    load_recommender()
+    app.state.models_loaded = ["school_classifier", "influence_predictor", "recommender"]
+    app.state.startup_time = time.time()
+    logger.info("Models loaded successfully.")
+    yield
+    # Shutdown
+    logger.info("Shutting down Application...")
 
 app = FastAPI(
-    title="Philosophical Engine",
-    version="0.1.0",
-    lifespan=lifespan,
+    title="The Philosophical Engine API",
+    description="From ancient text to machine insight — classifying, recommending, and forecasting human philosophy.",
+    version="1.0.0",
+    lifespan=lifespan
 )
 
-origins_env = os.getenv("CORS_ALLOW_ORIGINS", "*")
-origins = [o.strip() for o in origins_env.split(",")] if origins_env else ["*"]
-
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"], # Allow all for local dev
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
+# Structlog Middleware
 @app.middleware("http")
-async def structured_request_logging(request: Request, call_next):
-    logger = structlog.get_logger()
-    start = time.perf_counter()
-    response = None
-    try:
-        response = await call_next(request)
-        return response
-    finally:
-        duration_ms = int((time.perf_counter() - start) * 1000)
-        status_code = response.status_code if response is not None else None
-        logger.info(
-            "http_request",
-            method=request.method,
-            path=request.url.path,
-            duration_ms=duration_ms,
-            status_code=status_code,
-        )
-
-
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    return JSONResponse(
-        status_code=422,
-        content={
-            "error": {
-                "type": "validation_error",
-                "message": "Request validation failed.",
-                "details": exc.errors(),
-            }
-        },
+async def structlog_middleware(request: Request, call_next):
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = (time.time() - start_time) * 1000
+    
+    logger.info(
+        "request",
+        method=request.method,
+        path=request.url.path,
+        duration_ms=round(process_time, 2),
+        status_code=response.status_code
     )
+    return response
 
+# Error Handlers
+@app.exception_handler(500)
+async def internal_server_error_handler(request: Request, exc: Exception):
+    logger.error("internal_error", error=str(exc))
+    return JSONResponse(status_code=500, content={"message": "Internal Server Error", "details": str(exc)})
 
-@app.exception_handler(Exception)
-async def internal_exception_handler(request: Request, exc: Exception):
-    logger = structlog.get_logger()
-    logger.error("unhandled_exception", path=request.url.path, exc_info=exc)
-    return JSONResponse(
-        status_code=500,
-        content={
-            "error": {
-                "type": "internal_error",
-                "message": "An unexpected error occurred.",
-            }
-        },
-    )
+# Routers
+app.include_router(classify.router, prefix="/api/v1")
+app.include_router(regression.router, prefix="/api/v1")
+app.include_router(embeddings.router, prefix="/api/v1")
+app.include_router(recommend.router, prefix="/api/v1")
+app.include_router(timeseries.router, prefix="/api/v1")
+app.include_router(clusters.router, prefix="/api/v1")
+app.include_router(associations.router, prefix="/api/v1")
 
+from fastapi.staticfiles import StaticFiles
+import os
 
-@app.get("/health")
-def health():
-    state = app.state.philosophical_engine
-    uptime_seconds = int(time.monotonic() - state["start_time_monotonic"])
+# Serve the frontend
+if os.path.isdir("frontend"):
+    app.mount("/dashboard", StaticFiles(directory="frontend", html=True), name="dashboard")
+
+@app.get("/health", tags=["System"])
+async def health_check():
+    """Health check endpoint."""
+    uptime = time.time() - app.state.startup_time
     return {
         "status": "ok",
-        "models_loaded": state["models_loaded"],
-        "uptime_seconds": uptime_seconds,
+        "models_loaded": getattr(app.state, "models_loaded", []),
+        "uptime_seconds": round(uptime, 2)
     }
 
-
-@app.get("/models/info")
-def models_info():
-    state = app.state.philosophical_engine
+@app.get("/models/info", tags=["System"])
+async def models_info():
+    """Returns metadata about loaded models."""
     return {
-        "models": state["model_metadata"],
+        "classification": "LogisticRegression/XGBoost/DistilBERT",
+        "regression": "Ridge/GradientBoosting/LightGBM",
+        "embeddings": "all-MiniLM-L6-v2 + PCA + UMAP + t-SNE",
+        "recommendation": "Hybrid (Content + Collaborative)",
+        "timeseries": "Prophet + IsolationForest",
+        "clustering": "K-Means / HDBSCAN",
+        "association": "Apriori"
     }
 
+import subprocess
+import asyncio
+import os
 
-# Routers (versioned)
-api_prefix = "/api/v1"
-app.include_router(classify_router, prefix=api_prefix)
-app.include_router(regression_router, prefix=api_prefix)
-app.include_router(embeddings_router, prefix=api_prefix)
-app.include_router(recommend_router, prefix=api_prefix)
-app.include_router(timeseries_router, prefix=api_prefix)
-app.include_router(clusters_router, prefix=api_prefix)
-app.include_router(associations_router, prefix=api_prefix)
+PIPELINE_LOG_FILE = "pipeline.log"
+current_pipeline_process = None
+
+@app.post("/api/v1/pipeline/run", tags=["System"])
+async def run_pipeline(max_books: int = 10):
+    """Triggers the Prefect pipeline asynchronously."""
+    global current_pipeline_process
+    try:
+        # Clear log file if it exists
+        open(PIPELINE_LOG_FILE, 'w').close()
+        
+        # Run the pipeline script as a background process to avoid blocking
+        log_file = open(PIPELINE_LOG_FILE, 'a')
+        current_pipeline_process = subprocess.Popen(
+            ["python", "-m", "pipeline.philosophical_pipeline"], 
+            stdout=log_file, 
+            stderr=subprocess.STDOUT
+        )
+        return {"message": "Pipeline triggered successfully in the background.", "pid": current_pipeline_process.pid}
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/v1/pipeline/status", tags=["System"])
+async def pipeline_status():
+    """Gets the status and logs of the running pipeline."""
+    global current_pipeline_process
+    
+    is_running = False
+    if current_pipeline_process is not None:
+        is_running = current_pipeline_process.poll() is None
+        
+    logs = ""
+    if os.path.exists(PIPELINE_LOG_FILE):
+        with open(PIPELINE_LOG_FILE, 'r', encoding='utf-8', errors='ignore') as f:
+            lines = f.readlines()
+            logs = "".join(lines[-200:])
+            
+    return {
+        "is_running": is_running,
+        "logs": logs
+    }

@@ -1,32 +1,43 @@
-# syntax=docker/dockerfile:1
-
-FROM python:3.11-slim AS builder
+# Stage 1: Builder
+FROM python:3.11-slim as builder
 
 WORKDIR /app
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-ENV PIP_NO_CACHE_DIR=1
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip install --upgrade pip wheel && pip install -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
-FROM python:3.11-slim AS runtime
+# Stage 2: Runtime
+FROM python:3.11-slim
 
 WORKDIR /app
-ENV PYTHONUNBUFFERED=1
 
 # Create non-root user
-RUN adduser --disabled-password --gecos "" appuser
+RUN addgroup --system app && adduser --system --group app
 
-COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
-COPY --from=builder /usr/local/bin /usr/local/bin
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+
+RUN pip install --no-cache /wheels/*
 
 COPY . .
 
-USER appuser
+# Set permissions
+RUN chown -R app:app /app
+
+# Switch to non-root user
+USER app
 
 EXPOSE 8000
 
