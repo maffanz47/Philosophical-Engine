@@ -515,8 +515,9 @@
       fetch(metaUrl)
         .then(res => res.json())
         .then(meta => {
-          if (meta.cluster_centers_2d) {
-            drawClusterCenters(meta.cluster_centers_2d);
+          if (meta.cluster_centers_2d && meta.cluster_names) {
+            drawClusterCenters(meta.cluster_centers_2d, meta.cluster_names);
+            updateKMeansNames(meta.cluster_names);
           }
         }).catch(err => console.warn('Could not load meta for clusters', err));
 
@@ -558,6 +559,7 @@
     for (let i = 0; i < 7; i++) {
       const node = document.createElement('div');
       node.className = `cluster-node ${i === d.kmeans_cluster ? 'active' : ''}`;
+      node.id = `cluster-node-${i}`;
       node.textContent = i;
       kmeansViz.appendChild(node);
     }
@@ -590,7 +592,7 @@
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function drawClusterCenters(centers_2d) {
+  function drawClusterCenters(centers_2d, cluster_names) {
     const pcaPlane = document.querySelector('.pca-plane');
     // Remove old dots if they exist
     pcaPlane.querySelectorAll('.pca-cluster-dot').forEach(el => el.remove());
@@ -604,7 +606,7 @@
       
       const dot = document.createElement('div');
       dot.className = 'pca-cluster-dot';
-      dot.setAttribute('data-cluster', `C${idx}`);
+      dot.setAttribute('data-cluster', cluster_names[idx]);
       dot.style.left = `${xPct}%`;
       dot.style.top = `${yPct}%`;
       
@@ -613,6 +615,18 @@
       requestAnimationFrame(() => {
         dot.style.opacity = '1';
       });
+    });
+  }
+
+  function updateKMeansNames(names) {
+    names.forEach((name, idx) => {
+      const node = document.getElementById(`cluster-node-${idx}`);
+      if (node) {
+        node.title = name;
+        node.textContent = name.substring(0, 3).toUpperCase();
+        node.style.fontSize = '0.65rem';
+        node.style.fontWeight = '800';
+      }
     });
   }
 
