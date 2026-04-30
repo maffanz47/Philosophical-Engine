@@ -95,6 +95,10 @@ class PredictResponse(BaseModel):
     pca_y: float
 
 
+class MetaResponse(BaseModel):
+    cluster_centers_2d: list[list[float]]
+
+
 # ── Endpoints ──────────────────────────────────────────────────────────────
 
 @app.get("/health", tags=["meta"])
@@ -106,6 +110,19 @@ def health():
             detail="Engine not loaded. Run train.py first.",
         )
     return {"status": "ok", "engine": "loaded"}
+
+
+@app.get("/meta", response_model=MetaResponse, tags=["meta"])
+def get_meta():
+    """Returns the K-Means cluster centroids projected into 2D PCA space."""
+    if engine is None:
+        raise HTTPException(status_code=503, detail="Engine not loaded.")
+    try:
+        centers_10k = engine.kmeans.cluster_centers_
+        centers_2d = engine.pca.transform(centers_10k)
+        return MetaResponse(cluster_centers_2d=centers_2d.tolist())
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 @app.post("/predict", response_model=PredictResponse, tags=["inference"])

@@ -293,7 +293,22 @@
       transform: translate(-50%, -50%);
       box-shadow: 0 0 12px rgba(245,197,66,.8);
       transition: top 1s cubic-bezier(.4,0,.2,1), left 1s cubic-bezier(.4,0,.2,1), opacity 0.5s;
-      opacity: 0; left: 50%; top: 50%; /* Start center */
+      opacity: 0; left: 50%; top: 50%; z-index: 10;
+    }
+    .pca-cluster-dot {
+      position: absolute;
+      width: 6px; height: 6px;
+      background: rgba(255,255,255,.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.5s;
+      opacity: 0; z-index: 5;
+    }
+    .pca-cluster-dot:hover::after {
+      content: attr(data-cluster);
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      background: var(--surface2); border: 1px solid var(--border);
+      padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; color: var(--text);
     }
 
     .metric-label { font-size: .72rem; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
@@ -421,15 +436,18 @@
           <div style="font-size:.75rem; color:var(--text-dim); margin-top:4px; font-variant-numeric: tabular-nums;">
             X: <span id="pca-x-val">—</span> | Y: <span id="pca-y-val">—</span>
           </div>
+          <div style="font-size:.7rem; color:var(--muted); margin-top:8px; text-align:center; line-height:1.5;">
+            <strong>X-Axis (Horizontal):</strong> Abstract Concepts ↔ Concrete Terminology<br/>
+            <strong>Y-Axis (Vertical):</strong> Poetic/Subjective ↔ Analytical/Objective
+          </div>
         </div>
 
       </div>
       <p style="font-size:.78rem;color:var(--muted);margin-top:14px;line-height:1.6;">
-        <strong style="color:var(--text-dim)">K-Means</strong> groups texts by stylistic fingerprint
-        without labels — a cluster ID close to your training data's centroid confirms
-        the passage is linguistically coherent.
-        <strong style="color:var(--text-dim)">PCA coordinates</strong> project the 10,000-dimensional
-        TF-IDF vector onto a 2D plane; texts with similar coordinates share vocabulary structure.
+        <strong style="color:var(--text-dim)">K-Means</strong> found 7 natural clusters (writing styles) in the original texts without knowing the labels.
+        The small grey dots on the grid above represent the centers of those 7 distinct styles.
+        <strong style="color:var(--text-dim)">PCA</strong> mathematically flattens your 10,000-word vocabulary pattern into 2 simple coordinates.
+        The closer your golden dot lands to a specific grey cluster center, the closer your writing matches that exact philosophical school.
       </p>
     </div>
 
@@ -478,6 +496,7 @@
     results.style.display = 'none';
 
     try {
+      // Execute inference
       const response = await fetch(apiUrl, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -490,6 +509,17 @@
       }
 
       const data = await response.json();
+      
+      // Fetch cluster centers for visualization (fire-and-forget, fallback gracefully)
+      const metaUrl = apiUrl.replace(/\/predict$/, '/meta');
+      fetch(metaUrl)
+        .then(res => res.json())
+        .then(meta => {
+          if (meta.cluster_centers_2d) {
+            drawClusterCenters(meta.cluster_centers_2d);
+          }
+        }).catch(err => console.warn('Could not load meta for clusters', err));
+
       renderResults(data);
 
     } catch (e) {
@@ -558,6 +588,32 @@
 
     results.style.display = 'flex';
     results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function drawClusterCenters(centers_2d) {
+    const pcaPlane = document.querySelector('.pca-plane');
+    // Remove old dots if they exist
+    pcaPlane.querySelectorAll('.pca-cluster-dot').forEach(el => el.remove());
+    
+    const scale = 1.5;
+    const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+
+    centers_2d.forEach((coord, idx) => {
+      const xPct = clamp(((coord[0] / scale) + 0.5) * 100, 5, 95);
+      const yPct = clamp(((-coord[1] / scale) + 0.5) * 100, 5, 95);
+      
+      const dot = document.createElement('div');
+      dot.className = 'pca-cluster-dot';
+      dot.setAttribute('data-cluster', `C${idx}`);
+      dot.style.left = `${xPct}%`;
+      dot.style.top = `${yPct}%`;
+      
+      pcaPlane.appendChild(dot);
+      
+      requestAnimationFrame(() => {
+        dot.style.opacity = '1';
+      });
+    });
   }
 
   function renderBars(containerId, probs, topLabel) {
