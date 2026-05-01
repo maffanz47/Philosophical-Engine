@@ -1,0 +1,394 @@
+/* ── Design Tokens ──────────────────────────────────────────────────── */
+:root {
+  --bg: #0A0A0A; /* Deep Obsidian */
+  --surface: #121212; /* Charcoal */
+  --surface2: #1A1A1A; /* Soft background */
+  --border: #262626; /* Ultra-thin, low-contrast border */
+  --accent: #10B981; /* Emerald Green */
+  --muted: #4B5563; /* Muted Slate */
+  --text: #F3F4F6;
+  --text-dim: #9CA3AF;
+  --radius: 12px;
+  --radius-sm: 6px;
+  --shadow: none; /* Zero-glow */
+}
+
+/* ── Reset ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+header {
+  width: 100%;
+  max-width: 1000px;
+  padding: 40px 24px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1.2rem;
+}
+
+h1 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+
+/* ── Main card ───────────────────────────────────────────────────────── */
+main {
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ── Input area ──────────────────────────────────────────────────────── */
+.input-section {
+  width: 100%;
+}
+
+textarea {
+  width: 100%;
+  min-height: 200px;
+  background: var(--surface2);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  padding: 24px;
+  resize: vertical;
+  outline: none;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+textarea::placeholder {
+  color: var(--muted);
+}
+
+textarea:focus {
+  background: #202020;
+}
+
+.input-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.url-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.url-row label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.url-row input {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  outline: none;
+}
+
+#char-count {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* ── Classify button ─────────────────────────────────────────────────── */
+#classify-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#classify-btn:hover:not(:disabled) {
+  background: var(--border);
+  color: #fff;
+}
+
+#classify-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.spinner {
+  display: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--muted);
+  border-top-color: var(--text);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#error-banner {
+  display: none;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: #EF4444;
+  font-size: 0.9rem;
+}
+
+/* ── Results Dashboard ───────────────────────────────────────────────── */
+#results {
+  display: none;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.glass-card {
+  background: rgba(18, 18, 18, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.card-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+/* ── Classification Result ────────────────────────────────────────────── */
+.result-school {
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.result-branch {
+  font-size: 1rem;
+  color: var(--text-dim);
+}
+
+/* ── Confidence Meter ────────────────────────────────────────────────── */
+.confidence-pill {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 99px;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ── Complexity Index ────────────────────────────────────────────────── */
+.complexity-value {
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.complexity-track {
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  position: relative;
+  margin-top: 24px;
+}
+
+.complexity-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.complexity-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ── Librarian (Recommendations) ─────────────────────────────────────── */
+.librarian-scroll {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.librarian-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.librarian-scroll::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.book-card {
+  min-width: 240px;
+  padding: 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  flex-shrink: 0;
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-card:hover {
+  border-color: var(--muted);
+}
+
+.book-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.book-author {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+/* ── Scatter Plot (Unsupervised) ─────────────────────────────────────── */
+.scatter-wrap {
+  position: relative;
+  width: 100%;
+  background: transparent;
+  border: none;
+  overflow: hidden;
+}
+
+#scatter-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────── */
+footer {
+  margin-top: auto;
+  padding: 24px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+footer a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: var(--text);
+}
+
+/* ── Animations ──────────────────────────────────────────────────────── */
+.fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
