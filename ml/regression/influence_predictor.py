@@ -3,7 +3,7 @@ import time
 import joblib
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -33,6 +33,18 @@ MLFLOW_EXPERIMENT = "philosophical-engine-regression"
 _best_model = None
 _vectorizer = None
 _era_encoder = None
+
+
+def _latest_model_path(subdir: str) -> Optional[str]:
+    model_dir = Path("models") / subdir
+    if not model_dir.exists():
+        return None
+
+    candidates = list(model_dir.glob("influence_predictor_v*.pkl"))
+    if not candidates:
+        return None
+
+    return str(max(candidates, key=os.path.getctime))
 
 def load_data() -> pd.DataFrame:
     if not DATA_PATH.exists():
@@ -195,18 +207,21 @@ def load_best_model():
     global _best_model, _vectorizer, _era_encoder
     if _best_model is not None:
         return
-        
-    models = list(MODEL_DIR.glob("influence_predictor_v*.pkl"))
-    if not models:
+
+    latest_model_path = _latest_model_path("regression")
+    if not latest_model_path:
         logger.warning("No trained regression model found.")
         return
-        
-    latest_model_path = max(models, key=os.path.getctime)
-    data = joblib.load(latest_model_path)
-    
-    _best_model = data['model']
-    _vectorizer = data['vectorizer']
-    _era_encoder = data['era_encoder']
+
+    try:
+        data = joblib.load(latest_model_path)
+    except Exception as e:
+        logger.error(f"Failed to load regression model from {latest_model_path}: {e}")
+        return
+
+    _best_model = data.get('model')
+    _vectorizer = data.get('vectorizer')
+    _era_encoder = data.get('era_encoder')
 
 def predict_influence(features: Dict[str, Any]) -> float:
     """

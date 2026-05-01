@@ -299,6 +299,44 @@ button:active {
     border: 1px solid rgba(96, 165, 250, 0.2);
 }
 
+/* Clusters */
+.clusters-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.cluster-card {
+    padding: 20px;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.cluster-card:hover {
+    transform: translateY(-3px);
+}
+
+.cluster-card h3 {
+    margin-top: 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+}
+
+.cluster-card p {
+    margin: 8px 0;
+}
+
+.cluster-card ul {
+    margin: 8px 0;
+    padding-left: 20px;
+}
+
+.cluster-card li {
+    margin: 4px 0;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
 .pipeline-status-badge.running::before {
     content: '';
     display: inline-block;

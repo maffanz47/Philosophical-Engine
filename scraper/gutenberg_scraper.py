@@ -52,8 +52,8 @@ def get_session():
 
 def clean_text(text: str) -> str:
     """Basic clean up for raw Gutenberg text."""
-    start_match = re.search(r"\*\*\* START OF [^\n]*\*\*\*", text)
-    end_match = re.search(r"\*\*\* END OF [^\n]*\*\*\*", text)
+    start_match = re.search(r"\*\*\* START OF [^\n]*?\*\*\*", text)
+    end_match = re.search(r"\*\*\* END OF [^\n]*?\*\*\*", text)
     if start_match and end_match:
         text = text[start_match.end():end_match.start()]
     return text.strip()
@@ -223,6 +223,9 @@ def scrape_gutenberg(max_books: int = ScraperConfig.max_books) -> pd.DataFrame:
             year = raw_meta["year"]
             decade = round(year / 10) * 10
             
+            # Truncate full text for CSV storage (keep first 50k chars for training)
+            truncated_text = raw_meta["full_text"][:50000] if len(raw_meta["full_text"]) > 50000 else raw_meta["full_text"]
+            
             row = {
                 "gutenberg_id": raw_meta["gutenberg_id"],
                 "title": raw_meta["title"],
@@ -234,6 +237,7 @@ def scrape_gutenberg(max_books: int = ScraperConfig.max_books) -> pd.DataFrame:
                 "subjects": "|".join(raw_meta["subjects"]),
                 "download_count": raw_meta["download_count"],
                 "text_length": len(raw_meta["full_text"]),
+                "full_text": truncated_text,
                 **features
             }
             

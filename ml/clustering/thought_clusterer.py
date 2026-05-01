@@ -77,8 +77,13 @@ def cluster_thoughts():
     best_score = -1
     best_kmeans = None
     
-    logger.info("Sweeping K-Means from k=3 to 15...")
-    for k in range(3, 16):
+    max_k = min(15, len(X) - 1)
+    if max_k < 2:
+        logger.warning("Dataset too small for clustering.")
+        return
+    
+    logger.info(f"Sweeping K-Means from k=2 to {max_k}...")
+    for k in range(2, max_k + 1):
         kmeans = KMeans(n_clusters=k, random_state=42, n_init='auto')
         labels = kmeans.fit_predict(X)
         score = silhouette_score(X, labels)
@@ -97,7 +102,8 @@ def cluster_thoughts():
 
     # 2. HDBSCAN
     logger.info("Running HDBSCAN...")
-    hdb = hdbscan.HDBSCAN(min_cluster_size=10, min_samples=5)
+    min_cluster_size = max(2, len(X) // 5)  # Adjust for small datasets
+    hdb = hdbscan.HDBSCAN(min_cluster_size=min_cluster_size, min_samples=1)
     hdb_labels = hdb.fit_predict(X)
     
     # Calculate silhouette score only for clustered points (label != -1)
@@ -110,7 +116,7 @@ def cluster_thoughts():
     ari_hdb = adjusted_rand_score(true_labels, hdb_labels)
 
     with mlflow.start_run(run_name=f"HDBSCAN_{timestamp}"):
-        mlflow.log_params({"min_cluster_size": 10, "min_samples": 5, "algorithm": "HDBSCAN"})
+        mlflow.log_params({"min_cluster_size": min_cluster_size, "min_samples": 1, "algorithm": "HDBSCAN"})
         mlflow.log_metrics({"silhouette_score": score_hdb, "adjusted_rand_index": ari_hdb})
 
     # Choose best model to generate output (K-Means vs HDBSCAN by ARI)

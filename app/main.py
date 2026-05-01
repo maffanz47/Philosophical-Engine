@@ -83,6 +83,12 @@ import os
 if os.path.isdir("frontend"):
     app.mount("/dashboard", StaticFiles(directory="frontend", html=True), name="dashboard")
 
+from fastapi.responses import JSONResponse, RedirectResponse
+
+@app.get("/", include_in_schema=False)
+async def root_redirect():
+    return RedirectResponse(url="/dashboard/")
+
 @app.get("/health", tags=["System"])
 async def health_check():
     """Health check endpoint."""

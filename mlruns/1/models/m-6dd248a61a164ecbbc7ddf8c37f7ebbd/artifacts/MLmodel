@@ -1,0 +1,22 @@
+artifact_path: /workspaces/Philosophical-Engine/mlruns/1/models/m-6dd248a61a164ecbbc7ddf8c37f7ebbd/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.12.1
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.2.0
+mlflow_version: 3.11.1
+model_id: m-6dd248a61a164ecbbc7ddf8c37f7ebbd
+model_size_bytes: 70292
+model_uuid: m-6dd248a61a164ecbbc7ddf8c37f7ebbd
+prompts: null
+run_id: 5ff93c270de0464ebd0af0e8f4af15b3
+utc_time_created: '2026-05-01 00:45:18.750174'

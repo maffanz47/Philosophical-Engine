@@ -31,12 +31,54 @@ MODEL_DIR = Path("models/classification")
 MODEL_DIR.mkdir(parents=True, exist_ok=True)
 MLFLOW_EXPERIMENT = "philosophical-engine-classification"
 
+# Supported philosophical schools for classification
+SCHOOLS = [
+    "Empiricism",
+    "Rationalism",
+    "Existentialism",
+    "Stoicism",
+    "Idealism",
+    "Pragmatism",
+    "Other",
+]
+
 # Global loaded model for inference
 _best_model = None
 _vectorizer = None
 _label_encoder = None
 _is_bert = False
 _tokenizer = None
+
+
+def models_dir(subdir: str) -> Path:
+    return Path("models") / subdir
+
+
+def _latest_model_path(subdir: str) -> Optional[str]:
+    model_dir = models_dir(subdir)
+    if model_dir is None or not model_dir.exists():
+        return None
+
+    candidates = list(model_dir.glob("school_classifier_v*.pkl"))
+    if not candidates:
+        return None
+
+    return str(max(candidates, key=os.path.getctime))
+
+
+def _try_load_artifact(path: str) -> Optional[Dict[str, Any]]:
+    try:
+        artifact_path = Path(path)
+        if not artifact_path.exists():
+            return None
+        return joblib.load(artifact_path)
+    except Exception as e:
+        logger.error(f"Failed to load artifact from {path}: {e}")
+        return None
+
+
+def train_school_classifier(df: Optional[pd.DataFrame] = None) -> None:
+    raise NotImplementedError("School classifier training is not implemented yet.")
 
 def load_data() -> pd.DataFrame:
     if not DATA_PATH.exists():
@@ -85,8 +127,16 @@ def train_models():
     le = LabelEncoder()
     y = le.fit_transform(df['school_label'])
     
+    # Check if we have enough samples for stratification
+    unique_labels, counts = np.unique(y, return_counts=True)
+    min_class_count = min(counts)
+    
+    stratify_param = y if min_class_count >= 2 else None
+    if stratify_param is None:
+        logger.warning(f"Insufficient samples for stratification (min class count: {min_class_count}). Using random split.")
+    
     X_train_text, X_test_text, X_train_num, X_test_num, y_train, y_test = train_test_split(
-        X_text, X_num, y, test_size=0.2, random_state=42, stratify=y
+        X_text, X_num, y, test_size=0.2, random_state=42, stratify=stratify_param
     )
 
     # TF-IDF Vectorization
@@ -116,7 +166,14 @@ def train_models():
         mlflow.log_params({"C": 1.0, "max_iter": 1000, "model": "LogisticRegression"})
         mlflow.log_metrics({"accuracy": acc, "f1_macro": f1})
         
-        report = classification_report(y_test, preds, target_names=le.classes_, output_dict=True)
+        # Handle case where test set might have only one class
+        unique_test_labels = np.unique(y_test)
+        if len(unique_test_labels) == 1:
+            target_names = [le.inverse_transform([unique_test_labels[0]])[0]]
+        else:
+            target_names = le.classes_
+            
+        report = classification_report(y_test, preds, target_names=target_names, output_dict=True)
         with open("reports/lr_classification_report.json", "w") as f:
             json.dump(report, f)
         mlflow.log_artifact("reports/lr_classification_report.json")
@@ -146,7 +203,14 @@ def train_models():
         mlflow.log_params({"model": "XGBoost"})
         mlflow.log_metrics({"accuracy": acc, "f1_macro": f1})
         
-        report = classification_report(y_test, preds, target_names=le.classes_, output_dict=True)
+        # Handle case where test set might have only one class
+        unique_test_labels = np.unique(y_test)
+        if len(unique_test_labels) == 1:
+            target_names = [le.inverse_transform([unique_test_labels[0]])[0]]
+        else:
+            target_names = le.classes_
+            
+        report = classification_report(y_test, preds, target_names=target_names, output_dict=True)
         with open("reports/xgb_classification_report.json", "w") as f:
             json.dump(report, f)
         mlflow.log_artifact("reports/xgb_classification_report.json")
@@ -213,7 +277,14 @@ def train_models():
             mlflow.log_params({"epochs": 3, "model": "DistilBERT"})
             mlflow.log_metrics({"accuracy": acc, "f1_macro": f1})
             
-            report = classification_report(y_test, preds, target_names=le.classes_, output_dict=True)
+            # Handle case where test set might have only one class
+            unique_test_labels = np.unique(y_test)
+            if len(unique_test_labels) == 1:
+                target_names = [le.inverse_transform([unique_test_labels[0]])[0]]
+            else:
+                target_names = le.classes_
+                
+            report = classification_report(y_test, preds, target_names=target_names, output_dict=True)
             with open("reports/bert_classification_report.json", "w") as f:
                 json.dump(report, f)
             mlflow.log_artifact("reports/bert_classification_report.json")
@@ -243,33 +314,38 @@ def load_best_model():
     global _best_model, _vectorizer, _label_encoder, _is_bert, _tokenizer
     if _best_model is not None:
         return # Already loaded
-        
-    models = list(MODEL_DIR.glob("school_classifier_v*.pkl"))
-    if not models:
+
+    latest_model_path = _latest_model_path("classification")
+    if not latest_model_path:
         logger.warning("No trained classification model found.")
         return
-        
-    # Load the latest model
-    latest_model_path = max(models, key=os.path.getctime)
-    data = joblib.load(latest_model_path)
-    
-    _label_encoder = data['label_encoder']
-    _is_bert = data['is_bert']
-    
+
+    data = _try_load_artifact(latest_model_path)
+    if not data:
+        logger.warning("Failed to load the classification model artifact.")
+        return
+
+    _label_encoder = data.get('label_encoder')
+    _is_bert = data.get('is_bert', False)
+
     if _is_bert:
-        model_path = data['model_path']
+        model_path = data.get('model_path')
         _tokenizer = DistilBertTokenizer.from_pretrained(model_path)
         _best_model = DistilBertForSequenceClassification.from_pretrained(model_path)
         _best_model.eval()
     else:
-        _best_model = data['model']
-        _vectorizer = data['vectorizer']
+        _best_model = data.get('model')
+        _vectorizer = data.get('vectorizer')
 
 def predict_school(text: str, features_num: Optional[List[float]] = None) -> Dict[str, Any]:
     load_best_model()
     if _best_model is None:
-        return {"error": "Model not loaded."}
-        
+        return {
+            "school": "Other",
+            "confidence": 0.0,
+            "top3": [{"school": "Other", "confidence": 0.0}],
+        }
+
     if _is_bert:
         inputs = _tokenizer(text, truncation=True, padding=True, max_length=512, return_tensors="pt")
         with torch.no_grad():
@@ -279,19 +355,25 @@ def predict_school(text: str, features_num: Optional[List[float]] = None) -> Dic
         if features_num is None:
             # If no structured features provided, pad with zeros (assuming avg_sentence_length, vocab_richness, sentiment_polarity)
             features_num = [0.0, 0.0, 0.0]
-        
+
         X_tfidf = _vectorizer.transform([text])
-        X_combined = hstack([X_tfidf, np.array([features_num])]).tocsr()
+        try:
+            X_combined = hstack([X_tfidf, np.array([features_num])]).tocsr()
+        except Exception:
+            X_combined = np.hstack(
+                [np.atleast_2d(np.asarray(X_tfidf)), np.atleast_2d(np.asarray(features_num))]
+            )
+
         probs = _best_model.predict_proba(X_combined)[0]
-        
+
     # Get top 3
     top3_idx = np.argsort(probs)[-3:][::-1]
     top3 = [{"school": _label_encoder.inverse_transform([i])[0], "confidence": float(probs[i])} for i in top3_idx]
-    
+
     return {
         "school": top3[0]["school"],
         "confidence": top3[0]["confidence"],
-        "top3": top3
+        "top3": top3,
     }
 
 if __name__ == "__main__":

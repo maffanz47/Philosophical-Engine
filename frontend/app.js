@@ -1,19 +1,26 @@
-const API_BASE = "http://localhost:8000/api/v1";
+const API_BASE = "/api/v1";
 
-function showTab(tabId) {
+function showTab(tabId, element) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.sidebar li').forEach(li => li.classList.remove('active'));
     document.getElementById(tabId).classList.add('active');
-    event.currentTarget.classList.add('active');
+    if (element) {
+        element.classList.add('active');
+    }
+    
+    // Load data for specific tabs
+    if (tabId === 'clusters') {
+        loadClusters();
+    }
 }
 
 window.onload = async () => {
     try {
-        const res = await fetch("http://localhost:8000/health");
+        const res = await fetch("/health");
         const data = await res.json();
         document.getElementById("health-card").innerHTML = `<h3>API Health</h3><p>Status: <span style="color:var(--success)">${data.status}</span></p><p style="font-size:1rem;color:var(--text-muted);margin-top:5px;">Uptime: ${data.uptime_seconds}s</p>`;
         
-        const res2 = await fetch("http://localhost:8000/models/info");
+        const res2 = await fetch("/models/info");
         const data2 = await res2.json();
         document.getElementById("models-card").innerHTML = `<h3>Loaded Models</h3><p>${Object.keys(data2).length} families</p><p style="font-size:1rem;color:var(--text-muted);margin-top:5px;">Ready for inference</p>`;
         
@@ -200,12 +207,31 @@ async function getRecommendations() {
 
 async function loadClusters() {
     const resBox = document.getElementById("clustersResult");
-    resBox.innerText = "Loading...";
+    resBox.innerHTML = "Loading...";
     try {
         const res = await fetch(`${API_BASE}/clusters/`);
         const data = await res.json();
-        resBox.innerText = JSON.stringify(data, null, 2);
+        if (data.length === 0) {
+            resBox.innerHTML = "No clusters available.";
+            return;
+        }
+        let html = "<div class='clusters-container'>";
+        data.forEach(cluster => {
+            html += `
+                <div class='cluster-card glass'>
+                    <h3>${cluster.label}</h3>
+                    <p><strong>Size:</strong> ${cluster.size} texts</p>
+                    <p><strong>Top Terms:</strong> ${cluster.top_terms.slice(0, 5).join(', ')}</p>
+                    <p><strong>Representative Books:</strong></p>
+                    <ul>
+                        ${cluster.representative_books.map(book => `<li>${book.title} by ${book.author}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        });
+        html += "</div>";
+        resBox.innerHTML = html;
     } catch (e) {
-        resBox.innerText = "Error: " + e.message;
+        resBox.innerHTML = "Error: " + e.message;
     }
 }

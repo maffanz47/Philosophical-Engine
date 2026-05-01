@@ -21,4 +21,5 @@ def sample_dataframe():
 
 @pytest.fixture
 def test_client():
-    return TestClient(app)
+    with TestClient(app) as client:
+        yield client

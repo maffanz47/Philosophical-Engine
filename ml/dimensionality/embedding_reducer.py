@@ -59,7 +59,7 @@ def generate_and_reduce_embeddings():
     
     # 3. t-SNE 2D
     logger.info("Applying t-SNE...")
-    tsne_2d = TSNE(perplexity=min(30, len(embeddings)-1), n_iter=1000, n_components=2, random_state=42).fit_transform(embeddings_pca)
+    tsne_2d = TSNE(perplexity=min(30, len(embeddings)-1), max_iter=1000, n_components=2, random_state=42).fit_transform(embeddings_pca)
 
     # Save 2D UMAP coordinates with metadata
     umap_df = pd.DataFrame({

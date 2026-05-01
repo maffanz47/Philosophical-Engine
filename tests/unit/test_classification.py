@@ -21,7 +21,9 @@ class TestPredictSchool:
             result = predict_school("test text")
             assert result["school"] == "Other"
             assert result["confidence"] == 0.0
-            assert "Other" in result["top3"]
+            assert len(result["top3"]) == 1
+            assert result["top3"][0]["school"] == "Other"
+            assert result["top3"][0]["confidence"] == 0.0
 
     def test_predict_school_with_invalid_model(self):
         with patch(
@@ -43,7 +45,15 @@ class TestPredictSchool:
         mock_tfidf = MagicMock()
         mock_tfidf.transform.return_value = "tfidf_vector"
 
-        mock_artifact = {"model": mock_model, "tfidf": mock_tfidf}
+        mock_label_encoder = MagicMock()
+        mock_label_encoder.inverse_transform.side_effect = lambda labels: ["Other" if i == 0 else f"School{i}" for i in labels]
+
+        mock_artifact = {
+            "model": mock_model,
+            "vectorizer": mock_tfidf,
+            "label_encoder": mock_label_encoder,
+            "is_bert": False,
+        }
 
         mock_path.return_value = "models/classification/school_classifier_v123.pkl"
         mock_load.return_value = mock_artifact
