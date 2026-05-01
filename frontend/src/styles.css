@@ -1,0 +1,127 @@
+:root {
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  color: #f5f7fa;
+  background: #0f172a;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+}
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  margin-bottom: 0.4rem;
+}
+
+.muted {
+  color: #cbd5e1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+}
+
+textarea,
+input[type="file"] {
+  width: 100%;
+  margin-bottom: 0.8rem;
+}
+
+textarea {
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  padding: 0.6rem;
+  resize: vertical;
+}
+
+input[type="file"] {
+  color: #cbd5e1;
+}
+
+button {
+  background: #38bdf8;
+  border: none;
+  color: #0f172a;
+  font-weight: 700;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+button[disabled] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.divider {
+  text-align: center;
+  margin: 0.4rem 0 1rem;
+  color: #94a3b8;
+}
+
+.error {
+  color: #fda4af;
+  margin-top: 0.7rem;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.badge.pending {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.badge.ok {
+  background: #16a34a;
+  color: #ecfdf5;
+}
+
+.badge.error {
+  background: #dc2626;
+  color: #fee2e2;
+}
+
+ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,2532 @@
+[
+  {
+    "book_id": 1342,
+    "chunk_idx": 0,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 1,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 2,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 3,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 4,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 5,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 6,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 7,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 8,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 9,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 10,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 11,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 12,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 13,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 14,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 15,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 16,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 17,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 18,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 19,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 20,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 21,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 22,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 23,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 24,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 25,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 26,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 27,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 28,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 29,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 30,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 31,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 32,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 33,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 34,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 35,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 36,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 37,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 38,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 39,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 40,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 41,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 42,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 43,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 44,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 45,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 46,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 47,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 48,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 49,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 50,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 51,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 52,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 53,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 54,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 55,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 56,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 57,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 58,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 59,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 60,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 61,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 62,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 63,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 64,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 65,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 66,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 67,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 68,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 69,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 70,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 71,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 72,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 73,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 74,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 75,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 76,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 77,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 78,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 79,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 80,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 81,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 82,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 83,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 84,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 85,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 86,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 87,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 88,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 89,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 90,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 91,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 92,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 93,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 94,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 95,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 96,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 97,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 98,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 99,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 100,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 101,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 102,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 103,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 104,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 105,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 106,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 107,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 108,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 109,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 110,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 111,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 112,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 113,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 114,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 115,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 116,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 117,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 118,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 119,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 120,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 121,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 122,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 123,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 124,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 125,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 126,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 127,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 128,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 129,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 130,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 131,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 132,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 133,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 134,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 135,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 136,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 137,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 138,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 139,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 140,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 141,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 142,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 143,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 144,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 145,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 146,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 147,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 148,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 149,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 150,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 151,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 152,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 153,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 154,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 155,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 156,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 157,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 158,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 159,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 160,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 161,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 162,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 163,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 164,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 165,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 166,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 167,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 168,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 169,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 170,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 171,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 172,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 173,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 174,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 175,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 176,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 177,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 178,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 179,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 180,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 181,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 182,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 183,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 184,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 185,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 186,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 187,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 188,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 189,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 190,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 191,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 192,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 193,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 194,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 195,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 196,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 197,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 198,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 199,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 200,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 201,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 202,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 203,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 204,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 205,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 206,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 207,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 208,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 209,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 210,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 211,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 212,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 213,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 214,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 215,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 216,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 217,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 218,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 219,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 220,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 221,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 222,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 223,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 224,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 225,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 226,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 227,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 228,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 229,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 230,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 231,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 232,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 233,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 234,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 235,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 236,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 237,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 238,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 239,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 240,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 241,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 242,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 243,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 244,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 245,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 246,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 247,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 248,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 249,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 250,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 251,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 252,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 253,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 254,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 255,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 256,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 257,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 258,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 259,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 260,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 261,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 262,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 263,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 264,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 265,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 266,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 267,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 268,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 269,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 270,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 271,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 272,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 273,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 274,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 275,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 276,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 277,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 278,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 279,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 280,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 281,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 282,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 283,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 284,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 285,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 286,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 287,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 288,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 289,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 290,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 291,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 292,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 293,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 294,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 295,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 296,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 297,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 298,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 299,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 300,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 301,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 302,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 303,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 304,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 305,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 306,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 307,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 308,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 309,
+    "cluster": 0
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 310,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 311,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 312,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 313,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 314,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 315,
+    "cluster": 2
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 316,
+    "cluster": 4
+  },
+  {
+    "book_id": 1342,
+    "chunk_idx": 317,
+    "cluster": 1
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 0,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 1,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 2,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 3,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 4,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 5,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 6,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 7,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 8,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 9,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 10,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 11,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 12,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 13,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 14,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 15,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 16,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 17,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 18,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 19,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 20,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 21,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 22,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 23,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 24,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 25,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 26,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 27,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 28,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 29,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 30,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 31,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 32,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 33,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 34,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 35,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 36,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 37,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 38,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 39,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 40,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 41,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 42,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 43,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 44,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 45,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 46,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 47,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 48,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 49,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 50,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 51,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 52,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 53,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 54,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 55,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 56,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 57,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 58,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 59,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 60,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 61,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 62,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 63,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 64,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 65,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 66,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 67,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 68,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 69,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 70,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 71,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 72,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 73,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 74,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 75,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 76,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 77,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 78,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 79,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 80,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 81,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 82,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 83,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 84,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 85,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 86,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 87,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 88,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 89,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 90,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 91,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 92,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 93,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 94,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 95,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 96,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 97,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 98,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 99,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 100,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 101,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 102,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 103,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 104,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 105,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 106,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 107,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 108,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 109,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 110,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 111,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 112,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 113,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 114,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 115,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 116,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 117,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 118,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 119,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 120,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 121,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 122,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 123,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 124,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 125,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 126,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 127,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 128,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 129,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 130,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 131,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 132,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 133,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 134,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 135,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 136,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 137,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 138,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 139,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 140,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 141,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 142,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 143,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 144,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 145,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 146,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 147,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 148,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 149,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 150,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 151,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 152,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 153,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 154,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 155,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 156,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 157,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 158,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 159,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 160,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 161,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 162,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 163,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 164,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 165,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 166,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 167,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 168,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 169,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 170,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 171,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 172,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 173,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 174,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 175,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 176,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 177,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 178,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 179,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 180,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 181,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 182,
+    "cluster": 0
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 183,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 184,
+    "cluster": 2
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 185,
+    "cluster": 4
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 186,
+    "cluster": 3
+  },
+  {
+    "book_id": 84,
+    "chunk_idx": 187,
+    "cluster": 3
+  }
+]

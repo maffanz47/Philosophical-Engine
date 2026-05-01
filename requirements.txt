@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+prefect
+requests
+nltk
+numpy
+torch
+scikit-learn
+transformers
+python-multipart
+pytest

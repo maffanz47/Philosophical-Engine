@@ -1,0 +1,21 @@
+{
+  "training": {
+    "baseline": {
+      "tier": "Fast",
+      "model_path": "artifacts\\models\\ANN_v1.0_Fast_20260430T200317Z.pt",
+      "regressor_path": "artifacts\\models\\Regressor_v1.0_Fast_20260430T200317Z.pt",
+      "f1_score": 1.0,
+      "rmse": 0.1263
+    },
+    "pro": {
+      "tier": "Pro",
+      "model_path": "artifacts\\models\\ANN_v1.0_Pro_20260430T200322Z.pt",
+      "regressor_path": "artifacts\\models\\Regressor_v1.0_Pro_20260430T200322Z.pt",
+      "f1_score": 1.0,
+      "rmse": 0.5796
+    }
+  },
+  "documents_analyzed": 506,
+  "feature_dimensions": 3,
+  "n_clusters": 5
+}

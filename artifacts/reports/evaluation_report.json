@@ -1,0 +1,44 @@
+{
+  "book_ids": [
+    1342,
+    84
+  ],
+  "num_samples": 578,
+  "num_classes": 2,
+  "fast_tier": {
+    "classification": {
+      "f1_weighted": 1.0,
+      "confusion_matrix": [
+        [
+          174
+        ]
+      ],
+      "labels_present": [
+        0
+      ]
+    },
+    "regression": {
+      "rmse": 0.1264,
+      "mae": 0.0923,
+      "r2": -2.0419
+    }
+  },
+  "pro_tier": {
+    "classification": {
+      "f1_weighted": 1.0,
+      "confusion_matrix": [
+        [
+          174
+        ]
+      ],
+      "labels_present": [
+        0
+      ]
+    },
+    "regression": {
+      "rmse": 0.0798,
+      "mae": 0.0628,
+      "r2": -0.2144
+    }
+  }
+}
