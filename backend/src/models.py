@@ -290,7 +290,13 @@ def train_pro_classifier(df: pd.DataFrame):
     if embed_cache.exists():
         logger.info("Loading cached DistilBERT embeddings …")
         X = np.load(str(embed_cache)).astype(np.float32)
+        if len(X) != len(df):
+            logger.warning("Cached embeddings length (%d) does not match df length (%d). Recomputing...", len(X), len(df))
+            X = None
     else:
+        X = None
+
+    if X is None:
         X = get_distilbert_embeddings(texts).astype(np.float32)
         np.save(str(embed_cache), X)
         logger.info("Embeddings cached → %s", embed_cache)
