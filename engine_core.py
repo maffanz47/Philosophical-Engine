@@ -35,9 +35,11 @@ class PhilosophyEngine:
     def __init__(self):
         self.tfidf_vec = None   # fitted TfidfVectorizer
 
-        self.svm       = None   # fitted SVC
+        self.svm_slow  = None   # fitted SVC (slow)
+        self.svm_fast  = None   # fitted SVC (fast)
         self.mlp       = None   # trained HierarchicalMLP
-        self.kmeans    = None   # fitted KMeans
+        self.kmeans_slow = None # fitted KMeans (slow)
+        self.kmeans_fast = None # fitted KMeans (fast)
         self.pca       = None   # fitted PCA
         self.device    = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -74,8 +76,14 @@ class PhilosophyEngine:
         y2 = np.array(self.y_t2)
 
         # ── 4a SVM ────────────────────────────────────────────────────────
-        print("\n  ── SVM (RBF, class_weight=balanced) ──")
-        self.svm = train_svm(self.X_tfidf, y1)
+        print("\n  ── SVM Thinking (Slow) (RBF, class_weight=balanced) ──")
+        self.svm_slow = train_svm(self.X_tfidf, y1)
+
+        print("\n  ── SVM (Fast) (RBF, 25% data) ──")
+        num_samples = self.X_tfidf.shape[0]
+        fast_size = max(1, int(num_samples * 0.25))
+        indices = np.random.choice(num_samples, fast_size, replace=False)
+        self.svm_fast = train_svm(self.X_tfidf[indices], y1[indices])
 
         # Shared tensors
         X_dense = torch.tensor(self.X_tfidf.toarray(), dtype=torch.float32)
@@ -95,7 +103,15 @@ class PhilosophyEngine:
         print("\n" + "=" * 60)
         print("  PHASE 5 — UNSUPERVISED MODELS")
         print("=" * 60)
-        self.kmeans = fit_kmeans(self.X_tfidf, n_clusters=n_clusters)
+        print("\n  ── K-Means Clustering Thinking (Slow) ──")
+        self.kmeans_slow = fit_kmeans(self.X_tfidf, n_clusters=n_clusters)
+        
+        print("\n  ── K-Means Clustering (Fast) ──")
+        num_samples = self.X_tfidf.shape[0]
+        fast_size = max(1, int(num_samples * 0.25))
+        indices = np.random.choice(num_samples, fast_size, replace=False)
+        self.kmeans_fast = fit_kmeans(self.X_tfidf[indices], n_clusters=n_clusters)
+        
         self.pca, self.Z_2d = fit_pca(self.X_tfidf)
 
     # ── Full Build ────────────────────────────────────────────────────────
@@ -115,8 +131,10 @@ class PhilosophyEngine:
         import os, joblib
         os.makedirs(path, exist_ok=True)
         joblib.dump(self.tfidf_vec, f"{path}/tfidf_vec.pkl")
-        joblib.dump(self.svm, f"{path}/svm.pkl")
-        joblib.dump(self.kmeans, f"{path}/kmeans.pkl")
+        joblib.dump(self.svm_slow, f"{path}/svm_slow.pkl")
+        joblib.dump(self.svm_fast, f"{path}/svm_fast.pkl")
+        joblib.dump(self.kmeans_slow, f"{path}/kmeans_slow.pkl")
+        joblib.dump(self.kmeans_fast, f"{path}/kmeans_fast.pkl")
         joblib.dump(self.pca, f"{path}/pca.pkl")
         
         # Save PyTorch state dictionaries
@@ -133,8 +151,10 @@ class PhilosophyEngine:
         
         print(f"\n  [↓] Loading models from '{path}/' ...")
         self.tfidf_vec = joblib.load(f"{path}/tfidf_vec.pkl")
-        self.svm       = joblib.load(f"{path}/svm.pkl")
-        self.kmeans    = joblib.load(f"{path}/kmeans.pkl")
+        self.svm_slow  = joblib.load(f"{path}/svm_slow.pkl")
+        self.svm_fast  = joblib.load(f"{path}/svm_fast.pkl")
+        self.kmeans_slow = joblib.load(f"{path}/kmeans_slow.pkl")
+        self.kmeans_fast = joblib.load(f"{path}/kmeans_fast.pkl")
         self.pca       = joblib.load(f"{path}/pca.pkl")
         
         # Initialize PyTorch models with correct dimensions then load weights
@@ -145,7 +165,7 @@ class PhilosophyEngine:
         print("  [✓] Engine ready.")
 
     # ── Single-text Inference ─────────────────────────────────────────────
-    def predict(self, text: str) -> dict:
+    def predict(self, text: str, mode: str = "slow") -> dict:
         """
         Classify one passage through all trained models.
         Returns a dict ready for formatted console output.
@@ -153,8 +173,11 @@ class PhilosophyEngine:
         clean   = clean_and_lemmatize(text)
         x_tfidf = self.tfidf_vec.transform([clean])
 
+        svm_model = self.svm_fast if mode == "fast" else self.svm_slow
+        kmeans_model = self.kmeans_fast if mode == "fast" else self.kmeans_slow
+
         # SVM — deterministic Tier-1 label
-        svm_idx   = int(self.svm.predict(x_tfidf)[0])
+        svm_idx   = int(svm_model.predict(x_tfidf)[0])
         svm_label = IDX_TO_TIER1[svm_idx]
 
         # MLP — hierarchical probabilities
@@ -166,7 +189,7 @@ class PhilosophyEngine:
         t2_idx = int(np.argmax(p2))
 
         # K-Means cluster
-        cluster_id = int(self.kmeans.predict(x_tfidf)[0])
+        cluster_id = int(kmeans_model.predict(x_tfidf)[0])
 
         # PCA 2D projection
         x_2d = self.pca.transform(x_tfidf.toarray())[0]

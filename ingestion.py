@@ -201,7 +201,7 @@ def ingest_all() -> tuple[list[str], list[int], list[int]]:
             raw = fetch_book(bid)
 
             if raw is None:
-                tqdm.write(f"    [✗] ID={bid} — all mirrors failed, skipping.")
+                tqdm.write(f"    [FAIL] ID={bid} -- all mirrors failed, skipping.")
                 continue
 
             body   = strip_gutenberg_boilerplate(raw)
@@ -212,7 +212,7 @@ def ingest_all() -> tuple[list[str], list[int], list[int]]:
             pool.extend(taken)
 
             tqdm.write(
-                f"    [✓] {t2_name:<16} ID={bid:<6}  "
+                f"    [OK]  {t2_name:<16} ID={bid:<6}  "
                 f"+{len(taken):>4} chunks  "
                 f"({len(pool):>5}/{STRICT_CHUNK_LIMIT})"
             )
@@ -221,7 +221,7 @@ def ingest_all() -> tuple[list[str], list[int], list[int]]:
 
         if len(pool) < STRICT_CHUNK_LIMIT:
             tqdm.write(
-                f"  [⚠] {t2_name}: exhausted all sources with only "
+                f"  [WARN] {t2_name}: exhausted all sources with only "
                 f"{len(pool):,} / {STRICT_CHUNK_LIMIT:,} chunks."
             )
 

@@ -74,6 +74,10 @@ class PredictRequest(BaseModel):
         description="A philosophical text passage (minimum 20 characters).",
         examples=["The will to power is the fundamental drive of all existence."],
     )
+    speed: str = Field(
+        default="slow",
+        description="Execution speed: 'slow' (full model) or 'fast' (25% data model)."
+    )
 
 
 class Tier1Result(BaseModel):
@@ -127,7 +131,7 @@ def get_meta():
         import numpy as np
         from taxonomy import IDX_TO_TIER1, IDX_TO_TIER2, TIER2_TO_TIER1
 
-        centers_10k = engine.kmeans.cluster_centers_          # shape (7, 10000)
+        centers_10k = engine.kmeans_slow.cluster_centers_          # shape (7, 10000)
         centers_2d  = engine.pca.transform(centers_10k)       # shape (7, 2)
 
         # ── Label each cluster using SVM prediction on the centroid ──────────
@@ -143,7 +147,7 @@ def get_meta():
             # --- Tier-1 via SVM on the centroid (sparse-safe) ---
             import scipy.sparse as sp
             c_sparse = sp.csr_matrix(c.reshape(1, -1))
-            t1_idx   = int(engine.svm.predict(c_sparse)[0])
+            t1_idx   = int(engine.svm_slow.predict(c_sparse)[0])
             t1_label = IDX_TO_TIER1[t1_idx]
 
             # --- Tier-2 via MLP on the centroid ---
@@ -181,7 +185,7 @@ def predict(body: PredictRequest):
         raise HTTPException(status_code=503, detail="Engine not loaded.")
 
     try:
-        raw = engine.predict(body.text)
+        raw = engine.predict(body.text, mode=body.speed)
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 

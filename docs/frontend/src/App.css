@@ -1,0 +1,332 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  --bg-color: #080808;
+  --grid-color: rgba(255, 255, 255, 0.03);
+  --surface-color: #121212;
+  --surface-hover: #181818;
+  --border-color: #222222;
+  
+  --amber: #f5b301;
+  --amber-dim: rgba(245, 179, 1, 0.15);
+  
+  --text-main: #f0f0f0;
+  --text-muted: #666666;
+  --text-mono: #555555;
+  
+  --radius-lg: 12px;
+  --radius-sm: 8px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'JetBrains Mono', monospace;
+  background-color: var(--bg-color);
+  background-image: 
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: center center;
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1000px;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* ── Title ──────────────────────────────────────────────────────── */
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+  text-shadow: 0 0 15px var(--amber-dim), 0 0 30px var(--amber-dim);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+
+/* ── Terminal Cards ──────────────────────────────────────────────────────── */
+.terminal-card {
+  background-color: rgba(18, 18, 18, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-header {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--amber);
+  display: flex;
+  align-items: center;
+  letter-spacing: 1px;
+}
+
+/* ── Model Select ──────────────────────────────────────────────────────── */
+.model-select-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+}
+
+.model-options {
+  display: flex;
+  gap: 32px;
+}
+
+.model-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.model-option:hover {
+  color: var(--text-main);
+}
+
+.model-option.active {
+  color: var(--amber);
+}
+
+.radio-circle {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--text-mono);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.model-option.active .radio-circle {
+  border-color: var(--amber);
+}
+
+.model-option.active .radio-circle::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background-color: var(--amber);
+  border-radius: 50%;
+}
+
+/* ── Inputs Grid ──────────────────────────────────────────────────────── */
+.inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .inputs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.input-area-wrapper {
+  flex: 1;
+  border: 1px dashed var(--border-color);
+  border-radius: 4px;
+  padding: 16px;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  min-height: 200px;
+}
+
+.input-area-wrapper:focus-within {
+  border-color: var(--amber);
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+}
+
+textarea::placeholder {
+  color: var(--text-mono);
+}
+
+.upload-area {
+  flex: 1;
+  border: 1px dashed var(--border-color);
+  border-radius: 4px;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--amber);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 32px;
+}
+
+.upload-area:hover {
+  border-color: var(--amber);
+  background-color: rgba(245, 179, 1, 0.05);
+}
+
+/* ── Action Buttons ──────────────────────────────────────────────────────── */
+.actions-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+}
+
+.btn {
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  padding: 16px 32px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  background-color: rgba(255,255,255,0.05);
+  color: var(--text-main);
+}
+
+.btn-primary {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--amber-dim);
+  color: var(--amber);
+  box-shadow: 0 0 15px var(--amber-dim);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Dashboard Grid (Results) ──────────────────────────────────────────────────────── */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 32px;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 40px;
+}
+
+.dashboard-card {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-label {
+  font-size: 0.75rem;
+  color: var(--text-mono);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.card-value {
+  color: var(--amber);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.card-subtext {
+  font-size: 0.75rem;
+  color: var(--text-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--amber);
+  border-radius: 50%;
+}
+
+.progress-track {
+  width: 100%;
+  height: 4px;
+  background-color: #222;
+  border-radius: 2px;
+  margin-top: auto;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--amber);
+  border-radius: 2px;
+}
+
+.threat-bars {
+  display: flex;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.threat-bar {
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: #222;
+}
+
+.threat-bar.active {
+  background-color: var(--amber);
+}
+
+/* Scatter canvas */
+#scatter-canvas {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: #080808;
+  margin-top: 16px;
+}
