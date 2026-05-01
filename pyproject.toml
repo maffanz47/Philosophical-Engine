@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "philosophical-engine"
+version = "0.1.0"
+description = "From ancient text to machine insight — classifying, recommending, and forecasting human philosophy."
+authors = ["Author <author@example.com>"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=app --cov=ml --cov-report=xml"
+testpaths = [
+    "tests",
+]

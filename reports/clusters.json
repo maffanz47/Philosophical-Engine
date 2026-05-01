@@ -1,0 +1,139 @@
+[
+  {
+    "cluster_id": 0,
+    "label": "Analytic Discourse",
+    "size": 4,
+    "top_terms": [
+      "zarathustra",
+      "star",
+      "risk",
+      "garment",
+      "rome",
+      "fundamentally",
+      "rope",
+      "functions",
+      "fruits",
+      "sacrifice",
+      "frightful",
+      "friends",
+      "fit",
+      "schooles",
+      "fearfull",
+      "scripture",
+      "sea",
+      "season",
+      "feare",
+      "gate"
+    ],
+    "representative_books": [
+      {
+        "gutenberg_id": 1998,
+        "title": "Thus Spake Zarathustra: A Book for All and None",
+        "author": "Nietzsche, Friedrich Wilhelm, 1844-1900"
+      },
+      {
+        "gutenberg_id": 205,
+        "title": "Walden, and On The Duty Of Civil Disobedience",
+        "author": "Thoreau, Henry David, 1817-1862"
+      },
+      {
+        "gutenberg_id": 3207,
+        "title": "Leviathan",
+        "author": "Hobbes, Thomas, 1588-1679"
+      },
+      {
+        "gutenberg_id": 4363,
+        "title": "Beyond Good and Evil",
+        "author": "Nietzsche, Friedrich Wilhelm, 1844-1900"
+      }
+    ]
+  },
+  {
+    "cluster_id": 1,
+    "label": "Analytic Discourse",
+    "size": 2,
+    "top_terms": [
+      "inflicts",
+      "forgiveness",
+      "foresight",
+      "foreigners",
+      "foreign",
+      "forehead",
+      "forbearances",
+      "fond",
+      "flung",
+      "flowers",
+      "flower",
+      "flavour",
+      "flatter",
+      "finished",
+      "fingers",
+      "finely",
+      "filled",
+      "filial",
+      "field",
+      "feticide"
+    ],
+    "representative_books": [
+      {
+        "gutenberg_id": 52106,
+        "title": "The origin and development of the moral ideas",
+        "author": "Westermarck, Edward, 1862-1939"
+      },
+      {
+        "gutenberg_id": 174,
+        "title": "The Picture of Dorian Gray",
+        "author": "Wilde, Oscar, 1854-1900"
+      }
+    ]
+  },
+  {
+    "cluster_id": 2,
+    "label": "Political Philosophy",
+    "size": 4,
+    "top_terms": [
+      "\u00e6tolians",
+      "flesh",
+      "explicit",
+      "states",
+      "spoken",
+      "factions",
+      "faustina",
+      "spain",
+      "sopra",
+      "ferrara",
+      "fictions",
+      "soldiery",
+      "fillest",
+      "slaughter",
+      "sinned",
+      "florence",
+      "stoicism",
+      "signs",
+      "florentine",
+      "foes"
+    ],
+    "representative_books": [
+      {
+        "gutenberg_id": 45304,
+        "title": "The City of God, Volume I",
+        "author": "Augustine, of Hippo, Saint, 354-430"
+      },
+      {
+        "gutenberg_id": 3296,
+        "title": "The Confessions of St. Augustine",
+        "author": "Augustine, of Hippo, Saint, 354-430"
+      },
+      {
+        "gutenberg_id": 2680,
+        "title": "Meditations",
+        "author": "Marcus Aurelius, Emperor of Rome, 121-180"
+      },
+      {
+        "gutenberg_id": 1232,
+        "title": "The Prince",
+        "author": "Machiavelli, Niccol\u00f2, 1469-1527"
+      }
+    ]
+  }
+]
