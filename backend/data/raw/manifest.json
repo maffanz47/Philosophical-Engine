@@ -1,0 +1,79 @@
+[
+  {
+    "book_id": 2680,
+    "school": "Stoicism",
+    "author": "Marcus Aurelius",
+    "title": "Meditations",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\2680_Meditations.txt"
+  },
+  {
+    "book_id": 4135,
+    "school": "Stoicism",
+    "author": "Epictetus",
+    "title": "Discourses",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\4135_Discourses.txt"
+  },
+  {
+    "book_id": 1998,
+    "school": "Existentialism",
+    "author": "Nietzsche",
+    "title": "Beyond Good and Evil",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\1998_Beyond_Good_and_Evil.txt"
+  },
+  {
+    "book_id": 4057,
+    "school": "Existentialism",
+    "author": "Kierkegaard",
+    "title": "Either Or",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\4057_Either_Or.txt"
+  },
+  {
+    "book_id": 35497,
+    "school": "Islamic Philosophy",
+    "author": "Al-Ghazali",
+    "title": "The Alchemy of Happiness",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\35497_The_Alchemy_of_Happiness.txt"
+  },
+  {
+    "book_id": 59,
+    "school": "Rationalism",
+    "author": "Descartes",
+    "title": "Meditations on First Philosophy",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\59_Meditations_on_First_Philosophy.txt"
+  },
+  {
+    "book_id": 3800,
+    "school": "Rationalism",
+    "author": "Spinoza",
+    "title": "Ethics",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\3800_Ethics.txt"
+  },
+  {
+    "book_id": 10615,
+    "school": "Empiricism",
+    "author": "John Locke",
+    "title": "An Essay Concerning Human Understanding",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\10615_An_Essay_Concerning_Human_Understanding.txt"
+  },
+  {
+    "book_id": 4705,
+    "school": "Empiricism",
+    "author": "David Hume",
+    "title": "An Enquiry Concerning Human Understanding",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\4705_An_Enquiry_Concerning_Human_Understanding.txt"
+  },
+  {
+    "book_id": 1497,
+    "school": "Idealism",
+    "author": "Plato",
+    "title": "The Republic",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\1497_The_Republic.txt"
+  },
+  {
+    "book_id": 4280,
+    "school": "Idealism",
+    "author": "Kant",
+    "title": "Critique of Pure Reason",
+    "path": "D:\\ML_project\\Philosophical-Engine\\backend\\data\\raw\\4280_Critique_of_Pure_Reason.txt"
+  }
+]

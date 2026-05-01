@@ -1,0 +1,13 @@
+pip install fastapi uvicorn spacy pandas numpy scikit-learn torch transformers prefect httpx pydantic pytest deepchecks python-dotenv
+python -m spacy download en_core_web_sm
+
+
+python workflows/main_flow.py
+
+
+python backend/main.py
+
+
+cd frontend
+npm install
+npm run dev
