@@ -1,0 +1,15 @@
+{
+  "baseline_f1": 0.996,
+  "pro_f1": 0.8784,
+  "regression_rmse": 0.0872,
+  "total_chunks": 2615,
+  "schools": {
+    "Idealism": 944,
+    "Empiricism": 835,
+    "Existentialism": 370,
+    "Rationalism": 246,
+    "Stoicism": 204,
+    "Islamic Philosophy": 16
+  },
+  "pipeline_run_at": "2026-05-01T12:11:19.440863Z"
+}
