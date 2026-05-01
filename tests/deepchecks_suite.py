@@ -63,6 +63,19 @@ def run_checks():
     val_result.save_as_html(str(REPORT_DIR / "train_test_validation_report.html"))
     logger.info(f"Train-Test Validation Report saved to {REPORT_DIR / 'train_test_validation_report.html'}")
 
+    # 3. Class Performance and Confusion Matrix
+    logger.info("Running Class Performance and Confusion Matrix checks...")
+    from deepchecks.tabular.checks import ClassPerformance, ConfusionMatrix
+    
+    perf_check = ClassPerformance()
+    perf_result = perf_check.run(train_ds, test_ds)
+    perf_result.save_as_html(str(REPORT_DIR / "class_performance_report.html"))
+    
+    conf_check = ConfusionMatrix()
+    conf_result = conf_check.run(train_ds, test_ds)
+    conf_result.save_as_html(str(REPORT_DIR / "confusion_matrix_report.html"))
+    logger.info("Class Performance and Confusion Matrix reports saved.")
+
     logger.info("Deepchecks validation complete.")
 
 if __name__ == "__main__":

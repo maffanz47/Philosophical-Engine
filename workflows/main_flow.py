@@ -135,10 +135,10 @@ def pro_training_task(df):
 
 
 @task(name="regression-training-task", log_prints=True)
-def regression_training_task(df, tfidf=None):
+def regression_training_task(df, embeddings):
     """Train Ridge Regression for complexity score prediction."""
     logger.info("Training Regression model …")
-    artifacts = train_regression_model(df, tfidf=tfidf)
+    artifacts = train_regression_model(df, embeddings=embeddings)
     logger.info("Regression RMSE: %.4f", artifacts["rmse"])
     return artifacts
 
@@ -240,15 +240,22 @@ def philosophical_engine_pipeline(force_download: bool = False):
         df = preprocessing_task(manifest)
         metrics["total_chunks"] = len(df)
 
-        # Prepare TF-IDF features for Baseline + Regression (shared)
-        from sklearn.feature_extraction.text import TfidfVectorizer
-        tfidf_shared = TfidfVectorizer(max_features=5000, ngram_range=(1, 2))
-        X_tfidf = tfidf_shared.fit_transform(df["lemmas"].values).toarray().astype(np.float32)
+        # Pro model training
+        pro_artifacts = pro_training_task(df)
+        metrics["pro_f1"] = round(pro_artifacts["f1_score"], 4)
+        
+        # Validation: check for F1 < 0.70 for any school
+        low_f1_schools = {k: v for k, v in pro_artifacts["class_f1_scores"].items() if v < 0.70}
+        if low_f1_schools:
+            err_msg = f"Validation failed: F1-score below 0.70 for schools: {low_f1_schools}"
+            logger.error(err_msg)
+            raise ValueError(err_msg)
 
-        # Stage 3: Concurrent training of Baseline + Pro + Regression
-        # Prefect 3 uses submit() for concurrent task execution
+        X_embeddings = pro_artifacts["X_embeddings"]
+
+        # Stage 3: Concurrent training of Baseline + Regression
         baseline_future = baseline_training_task.submit(df)
-        regression_future = regression_training_task.submit(df, tfidf_shared)
+        regression_future = regression_training_task.submit(df, X_embeddings)
 
         baseline_artifacts = baseline_future.result()
         regression_artifacts = regression_future.result()
@@ -256,15 +263,11 @@ def philosophical_engine_pipeline(force_download: bool = False):
         metrics["baseline_f1"] = round(baseline_artifacts["f1_score"], 4)
         metrics["regression_rmse"] = round(regression_artifacts["rmse"], 4)
 
-        # Pro model training (sequential after baseline — heavy GPU task)
-        pro_artifacts = pro_training_task(df)
-        metrics["pro_f1"] = round(pro_artifacts["f1_score"], 4)
-
-        # Stage 4: Clustering (on TF-IDF features)
-        df_clustered = clustering_task(df, X_tfidf)
+        # Stage 4: Clustering (on embeddings)
+        df_clustered = clustering_task(df, X_embeddings)
 
         # Stage 5: KNN Recommender
-        knn_artifacts = knn_task(X_tfidf, df)
+        knn_artifacts = knn_task(X_embeddings, df)
 
         # Save artifacts manifest for FastAPI to load
         artifacts_manifest = {

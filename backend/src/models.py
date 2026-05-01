@@ -142,10 +142,14 @@ def train_baseline_classifier(df: pd.DataFrame):
     train_loader = torch.utils.data.DataLoader(train_ds, batch_size=64, shuffle=True)
     test_loader  = torch.utils.data.DataLoader(test_ds, batch_size=64)
 
+    from sklearn.utils.class_weight import compute_class_weight
+    class_weights = compute_class_weight('balanced', classes=np.unique(y), y=y)
+    weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
+
     # Model
     model = BaselineANN(input_dim=X.shape[1], num_classes=num_classes).to(DEVICE)
     optimizer = optim.Adam(model.parameters(), lr=1e-3)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(weight=weights_tensor)
 
     # Training loop
     for epoch in range(20):
@@ -206,14 +210,17 @@ class ProANN(nn.Module):
         super(ProANN, self).__init__()
         self.network = nn.Sequential(
             nn.Linear(input_dim, 512),
+            nn.BatchNorm1d(512),
             nn.ReLU(),
-            nn.Dropout(0.4),
+            nn.Dropout(0.3),
             nn.Linear(512, 256),
+            nn.BatchNorm1d(256),
             nn.ReLU(),
             nn.Dropout(0.3),
             nn.Linear(256, 128),
+            nn.BatchNorm1d(128),
             nn.ReLU(),
-            nn.Dropout(0.2),
+            nn.Dropout(0.3),
             nn.Linear(128, num_classes),
         )
 
@@ -296,10 +303,15 @@ def train_pro_classifier(df: pd.DataFrame):
     train_loader = torch.utils.data.DataLoader(train_ds, batch_size=32, shuffle=True)
     test_loader  = torch.utils.data.DataLoader(test_ds, batch_size=32)
 
+    # Class weights for imbalanced data
+    from sklearn.utils.class_weight import compute_class_weight
+    class_weights = compute_class_weight('balanced', classes=np.unique(y), y=y)
+    weights_tensor = torch.tensor(class_weights, dtype=torch.float32).to(DEVICE)
+    
     model = ProANN(input_dim=768, num_classes=num_classes).to(DEVICE)
     optimizer = optim.AdamW(model.parameters(), lr=5e-4, weight_decay=1e-4)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss(weight=weights_tensor)
 
     for epoch in range(30):
         model.train()
@@ -324,7 +336,12 @@ def train_pro_classifier(df: pd.DataFrame):
             all_true.extend(y_batch.numpy())
 
     f1 = f1_score(all_true, all_preds, average="weighted")
+    f1_per_class = f1_score(all_true, all_preds, average=None)
     logger.info("Pro Classifier F1 (weighted): %.4f", f1)
+    
+    # map classes to their F1 scores
+    class_f1_scores = {le.classes_[i]: float(f1_per_class[i]) for i in range(num_classes)}
+    logger.info("Per-class F1: %s", class_f1_scores)
 
     save_model_versioned(model.state_dict(), "ANN_Pro", ext="pt")
     save_model_versioned(le, "LabelEncoder_Pro")
@@ -333,6 +350,7 @@ def train_pro_classifier(df: pd.DataFrame):
         "model": model,
         "label_encoder": le,
         "f1_score": f1,
+        "class_f1_scores": class_f1_scores,
         "X_embeddings": X,
         "y": y,
         "X_train": X_train,
@@ -345,13 +363,13 @@ def train_pro_classifier(df: pd.DataFrame):
 # ===========================================================================
 # Regression — Reading Complexity Predictor
 # ===========================================================================
-def train_regression_model(df: pd.DataFrame, tfidf: Optional[TfidfVectorizer] = None):
+def train_regression_model(df: pd.DataFrame, embeddings: np.ndarray):
     """
-    Train Ridge Regression to predict complexity_score from TF-IDF features.
+    Train Ridge Regression to predict complexity_score from DistilBERT + scalar features.
 
     Args:
-        df:    Corpus DataFrame.
-        tfidf: Pre-fitted TF-IDF vectorizer (reuse from baseline if available).
+        df:         Corpus DataFrame.
+        embeddings: DistilBERT embeddings.
 
     Returns:
         dict with model, RMSE, and feature data.
@@ -360,11 +378,8 @@ def train_regression_model(df: pd.DataFrame, tfidf: Optional[TfidfVectorizer] = 
 
     y = df["complexity_score"].values.astype(np.float32)
 
-    if tfidf is None:
-        tfidf = TfidfVectorizer(max_features=3000, ngram_range=(1, 2))
-        X = tfidf.fit_transform(df["lemmas"].values).toarray().astype(np.float32)
-    else:
-        X = tfidf.transform(df["lemmas"].values).toarray().astype(np.float32)
+    scalars = df[['fk_grade', 'avg_sent_len', 'avg_word_len']].values.astype(np.float32)
+    X = np.hstack((embeddings, scalars))
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42)
@@ -377,7 +392,7 @@ def train_regression_model(df: pd.DataFrame, tfidf: Optional[TfidfVectorizer] = 
 
     save_model_versioned(regressor, "Ridge_Regression")
 
-    return {"model": regressor, "tfidf": tfidf, "rmse": rmse}
+    return {"model": regressor, "rmse": rmse}
 
 
 # ===========================================================================
@@ -385,12 +400,10 @@ def train_regression_model(df: pd.DataFrame, tfidf: Optional[TfidfVectorizer] = 
 # ===========================================================================
 def build_knn_recommender(X: np.ndarray, df: pd.DataFrame, n_neighbors: int = 4):
     """
-    Build a KNN recommendation engine using Cosine Similarity.
-
-    Cosine similarity: cos(θ) = (A · B) / (||A|| ||B||)
+    Build a KNN recommendation engine using Cosine Similarity on L2-Normalized embeddings.
 
     Args:
-        X:            Feature matrix (TF-IDF or embeddings).
+        X:            Feature matrix (DistilBERT embeddings).
         df:           Corpus DataFrame (for metadata retrieval).
         n_neighbors:  Number of neighbours to retrieve (returns top 3).
 
@@ -398,11 +411,14 @@ def build_knn_recommender(X: np.ndarray, df: pd.DataFrame, n_neighbors: int = 4)
         dict with fitted NearestNeighbors model and the dataframe.
     """
     logger.info("=== Building KNN Recommender ===")
+    from sklearn.preprocessing import normalize
+    X_norm = normalize(X, norm='l2')
+    
     knn = NearestNeighbors(n_neighbors=n_neighbors, metric="cosine", algorithm="brute")
-    knn.fit(X)
+    knn.fit(X_norm)
     save_model_versioned(knn, "KNN_Recommender")
     logger.info("KNN Recommender built on %d samples.", len(X))
-    return {"model": knn, "df": df, "X": X}
+    return {"model": knn, "df": df, "X": X_norm}
 
 
 def get_recommendations(query_vector: np.ndarray, knn_artifacts: dict) -> list:

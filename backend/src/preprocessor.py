@@ -137,6 +137,12 @@ def avg_sentence_length(text: str) -> float:
         return 0.0
     return float(np.mean([len(s.split()) for s in sentences]))
 
+def avg_word_length(text: str) -> float:
+    """Average characters per word."""
+    words = text.split()
+    if not words:
+        return 0.0
+    return float(np.mean([len(w) for w in words]))
 
 def lexical_diversity(text: str) -> float:
     """Type-Token Ratio (unique_words / total_words) in [0, 1]."""
@@ -162,13 +168,28 @@ def compute_complexity_score(text: str) -> float:
     return round(float(np.clip(score, 0.0, 1.0)), 4)
 
 
+def balance_corpus(df: pd.DataFrame) -> pd.DataFrame:
+    """Apply Stratified Sampling with oversampling to fix class imbalance."""
+    if df.empty:
+        return df
+    max_count = df['school'].value_counts().max()
+    balanced = []
+    for school, group in df.groupby('school'):
+        if len(group) < max_count:
+            group = group.sample(max_count, replace=True, random_state=42)
+        balanced.append(group)
+    balanced_df = pd.concat(balanced).reset_index(drop=True)
+    logger.info("Corpus balanced. New class distribution:\n%s", balanced_df['school'].value_counts())
+    return balanced_df
+
+
 def build_corpus(manifest: list, save_csv: bool = True) -> pd.DataFrame:
     """
     Process every book in the manifest into a chunked, labeled DataFrame.
 
     Columns: chunk_id, book_id, school, author, title,
              raw_chunk, lemmas, complexity_score, fk_grade,
-             avg_sent_len, lexical_div
+             avg_sent_len, avg_word_len, lexical_div
     """
     rows = []
     chunk_counter = 0
@@ -204,12 +225,15 @@ def build_corpus(manifest: list, save_csv: bool = True) -> pd.DataFrame:
                 "complexity_score": compute_complexity_score(chunk),
                 "fk_grade":         round(flesch_kincaid_grade(chunk), 4),
                 "avg_sent_len":     round(avg_sentence_length(chunk), 4),
+                "avg_word_len":     round(avg_word_length(chunk), 4),
                 "lexical_div":      round(lexical_diversity(chunk), 4),
             })
             chunk_counter += 1
 
     df = pd.DataFrame(rows)
-    logger.info("Corpus built: %d chunks across %d books.", len(df), len(manifest))
+    df = balance_corpus(df)
+    
+    logger.info("Corpus built: %d chunks.", len(df))
 
     if save_csv and not df.empty:
         out_path = PROCESSED_DIR / "corpus.csv"

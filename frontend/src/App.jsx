@@ -25,7 +25,7 @@ export default function App() {
         formData.append('file', file);
         formData.append('model_tier', modelTier);
         
-        response = await fetch('http://localhost:8000/predict/upload', {
+        response = await fetch('http://127.0.0.1:8000/predict/upload', {
           method: 'POST',
           body: formData,
         });
@@ -33,7 +33,7 @@ export default function App() {
         if (!text || text.length < 10) {
           throw new Error("Please enter at least 10 characters.");
         }
-        response = await fetch('http://localhost:8000/predict', {
+        response = await fetch('http://127.0.0.1:8000/predict', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text, model_tier: modelTier }),
