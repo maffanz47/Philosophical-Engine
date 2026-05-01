@@ -117,8 +117,8 @@ def load_all_models():
     state["regressor"] = _load_latest("Ridge_Regression", MODELS_DIR_PATH)
 
     # ── KNN ─────────────────────────────────────────────────────────────────
-    knn = _load_latest("KNN_Recommender", MODELS_DIR_PATH)
-    state["knn"] = knn
+    state["knn_baseline"] = _load_latest("KNN_Baseline", MODELS_DIR_PATH)
+    state["knn_pro"]      = _load_latest("KNN_Pro", MODELS_DIR_PATH)
 
     # ── Corpus for recommendations ──────────────────────────────────────────
     import pandas as pd
@@ -131,12 +131,19 @@ def load_all_models():
 
     # ── TF-IDF corpus matrix ─────────────────────────────────────────────────
     if tfidf is not None and state["corpus_df"] is not None:
-        X_corpus = tfidf.transform(
+        X_corpus_baseline = tfidf.transform(
             state["corpus_df"]["lemmas"].fillna("").values
         ).toarray().astype(np.float32)
-        state["X_corpus"] = X_corpus
+        state["X_corpus_baseline"] = X_corpus_baseline
     else:
-        state["X_corpus"] = None
+        state["X_corpus_baseline"] = None
+
+    # ── Pro corpus matrix ────────────────────────────────────────────────────
+    embed_cache = MODELS_DIR_PATH / "distilbert_embeddings.npy"
+    if embed_cache.exists():
+        state["X_corpus_pro"] = np.load(str(embed_cache)).astype(np.float32)
+    else:
+        state["X_corpus_pro"] = None
 
     logger.info("Model loading complete.")
     MODEL_STATE.update(state)
@@ -253,15 +260,27 @@ def run_inference(text: str, model_tier: str = "baseline") -> dict:
 
     # ── Step 3: Recommendations ──────────────────────────────────────────────
     recommendations = []
-    if (MODEL_STATE.get("knn") and MODEL_STATE.get("X_corpus") is not None
-            and MODEL_STATE.get("corpus_df") is not None):
-        tfidf = MODEL_STATE.get("tfidf")
-        if tfidf:
-            q_vec = tfidf.transform([text]).toarray().astype(np.float32)[0]
+    
+    if model_tier == "baseline":
+        if (MODEL_STATE.get("knn_baseline") and MODEL_STATE.get("X_corpus_baseline") is not None
+                and MODEL_STATE.get("corpus_df") is not None):
+            tfidf = MODEL_STATE.get("tfidf")
+            if tfidf:
+                q_vec = tfidf.transform([text]).toarray().astype(np.float32)[0]
+                knn_artifacts = {
+                    "model": MODEL_STATE["knn_baseline"],
+                    "df":    MODEL_STATE["corpus_df"],
+                    "X":     MODEL_STATE["X_corpus_baseline"],
+                }
+                recommendations = get_recommendations(q_vec, knn_artifacts)
+    elif model_tier == "pro":
+        if (MODEL_STATE.get("knn_pro") and MODEL_STATE.get("X_corpus_pro") is not None
+                and MODEL_STATE.get("corpus_df") is not None):
+            q_vec = get_distilbert_embeddings([text[:512]])[0].astype(np.float32)
             knn_artifacts = {
-                "model": MODEL_STATE["knn"],
+                "model": MODEL_STATE["knn_pro"],
                 "df":    MODEL_STATE["corpus_df"],
-                "X":     MODEL_STATE["X_corpus"],
+                "X":     MODEL_STATE["X_corpus_pro"],
             }
             recommendations = get_recommendations(q_vec, knn_artifacts)
 
@@ -333,6 +352,7 @@ def list_schools():
 
 
 @app.get("/metrics", tags=["Info"])
+@app.get("/get_metrics", tags=["Info"])
 def get_metrics():
     """Return metrics from the last successful Prefect pipeline run."""
     results_path = PROCESSED_DIR / "pipeline_results.json"

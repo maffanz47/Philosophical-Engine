@@ -173,11 +173,15 @@ def clustering_task(df, X):
 
 
 @task(name="knn-task", log_prints=True)
-def knn_task(X, df):
-    """Build the KNN recommendation index."""
-    logger.info("Building KNN recommender …")
-    artifacts = build_knn_recommender(X, df, n_neighbors=4)
-    return artifacts
+def knn_task(X_pro, X_baseline, df):
+    """Build the KNN recommendation indices."""
+    logger.info("Building KNN recommender (Baseline) …")
+    baseline_artifacts = build_knn_recommender(X_baseline, df, n_neighbors=4, prefix="KNN_Baseline")
+    
+    logger.info("Building KNN recommender (Pro) …")
+    pro_artifacts = build_knn_recommender(X_pro, df, n_neighbors=4, prefix="KNN_Pro")
+    
+    return baseline_artifacts, pro_artifacts
 
 
 @task(name="notification-task", retries=2, log_prints=True)
@@ -267,7 +271,9 @@ def philosophical_engine_pipeline(force_download: bool = False):
         df_clustered = clustering_task(df, X_embeddings)
 
         # Stage 5: KNN Recommender
-        knn_artifacts = knn_task(X_embeddings, df)
+        tfidf = baseline_artifacts["tfidf"]
+        X_baseline = tfidf.transform(df["lemmas"].fillna("").values).toarray().astype(np.float32)
+        knn_baseline_artifacts, knn_pro_artifacts = knn_task(X_embeddings, X_baseline, df)
 
         # Save artifacts manifest for FastAPI to load
         artifacts_manifest = {

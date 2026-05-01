@@ -404,14 +404,15 @@ def train_regression_model(df: pd.DataFrame, embeddings: np.ndarray):
 # ===========================================================================
 # KNN — Recommendation Engine (Cosine Similarity)
 # ===========================================================================
-def build_knn_recommender(X: np.ndarray, df: pd.DataFrame, n_neighbors: int = 4):
+def build_knn_recommender(X: np.ndarray, df: pd.DataFrame, n_neighbors: int = 4, prefix: str = "KNN_Recommender"):
     """
     Build a KNN recommendation engine using Cosine Similarity on L2-Normalized embeddings.
 
     Args:
-        X:            Feature matrix (DistilBERT embeddings).
+        X:            Feature matrix.
         df:           Corpus DataFrame (for metadata retrieval).
         n_neighbors:  Number of neighbours to retrieve (returns top 3).
+        prefix:       Model prefix for saving.
 
     Returns:
         dict with fitted NearestNeighbors model and the dataframe.
@@ -422,7 +423,7 @@ def build_knn_recommender(X: np.ndarray, df: pd.DataFrame, n_neighbors: int = 4)
     
     knn = NearestNeighbors(n_neighbors=n_neighbors, metric="cosine", algorithm="brute")
     knn.fit(X_norm)
-    save_model_versioned(knn, "KNN_Recommender")
+    save_model_versioned(knn, prefix)
     logger.info("KNN Recommender built on %d samples.", len(X))
     return {"model": knn, "df": df, "X": X_norm}
 
@@ -438,9 +439,10 @@ def get_recommendations(query_vector: np.ndarray, knn_artifacts: dict) -> list:
     Returns:
         List of 3 dicts: {title, author, school, chunk_preview}
     """
+    from sklearn.preprocessing import normalize
     knn = knn_artifacts["model"]
     df  = knn_artifacts["df"]
-    q   = query_vector.reshape(1, -1)
+    q   = normalize(query_vector.reshape(1, -1), norm='l2')
     distances, indices = knn.kneighbors(q)
     recs = []
     for idx in indices[0][1:4]:  # skip index 0 (self-match)
