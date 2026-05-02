@@ -1,8 +1,10 @@
 version: '3.8'
 
 services:
-  # The trainer service: runs model training and saves artifacts to volume
+  # The trainer service: only runs if you explicitly call it.
+  # Command to run it: docker-compose run --rm trainer
   trainer:
+    image: model:latest
     build:
       context: .
       dockerfile: Docker/model_training.dockerfile
@@ -10,9 +12,12 @@ services:
       - .env
     volumes:
       - ./engine_artifacts:/app/engine_artifacts
+    profiles:
+      - train # This stops it from running automatically
 
   # The backend service: serves the FastAPI backend and static frontend
   api:
+    image: philo-backend:latest
     build:
       context: .
       dockerfile: Docker/backend.dockerfile
@@ -22,6 +27,3 @@ services:
       - .env
     volumes:
       - ./engine_artifacts:/app/engine_artifacts
-    depends_on:
-      trainer:
-        condition: service_completed_successfully
