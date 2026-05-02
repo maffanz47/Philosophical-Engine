@@ -207,3 +207,11 @@ def predict(body: PredictRequest):
         pca_x=raw["pca_coords"][0],
         pca_y=raw["pca_coords"][1],
     )
+
+from fastapi.staticfiles import StaticFiles
+
+# Serve the static frontend if the directory exists
+if os.path.isdir("static"):
+    app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
+elif os.path.isdir("docs"):
+    app.mount("/", StaticFiles(directory="docs", html=True), name="frontend")
