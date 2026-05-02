@@ -552,19 +552,45 @@
         power is the fundamental drive, the engine beneath all human striving and creation…"" maxlength="5000"
         aria-label="Philosophical text input"></textarea>
 
-      <div class="url-row">
-        <label style="margin-right: 5px; color: var(--muted); font-size: .78rem;">Speed:</label>
-        <label style="margin-right: 10px; color: var(--text-dim); font-size: .8rem; display: flex; align-items: center; gap: 4px;">
+      <!-- ── Codespace setup banner (shown when localhost detected on remote origin) ── -->
+      <div id="setup-banner" style="display:none; background:rgba(245,197,66,.08); border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:14px 18px; margin-bottom:14px;">
+        <strong style="color:#f5c542;">⚠ Backend URL Required</strong>
+        <p style="color:#94a3b8; font-size:.82rem; margin-top:6px; line-height:1.6;">
+          Your frontend is on <strong style="color:#e2e8f0;">GitHub Pages</strong> but the API URL still points to
+          <code style="background:rgba(255,255,255,.08); padding:1px 6px; border-radius:4px;">localhost</code> — that won't work remotely.<br>
+          Paste your <strong style="color:#f5c542;">GitHub Codespace backend URL</strong> below, then click <em>Test</em>.
+          <br><span style="font-size:.75rem; color:#6b7280;">Format: <code>https://YOUR-CODESPACE-8000.preview.app.github.dev/predict</code></span>
+        </p>
+      </div>
+
+      <!-- ── Speed + API URL row ── -->
+      <div class="url-row" style="flex-wrap:wrap; gap:8px;">
+        <label style="color: var(--muted); font-size: .78rem; white-space:nowrap;">Speed:</label>
+        <label style="color: var(--text-dim); font-size: .8rem; display: flex; align-items: center; gap: 4px;">
           <input type="radio" name="speed" value="fast" /> Fast
         </label>
-        <label style="margin-right: 20px; color: var(--text-dim); font-size: .8rem; display: flex; align-items: center; gap: 4px;">
-          <input type="radio" name="speed" value="slow" checked /> Slow
+        <label style="color: var(--text-dim); font-size: .8rem; display: flex; align-items: center; gap: 4px;">
+          <input type="radio" name="speed" value="slow" checked /> Slow (Thinking)
         </label>
 
-        <label for="api-url">API URL</label>
-        <input id="api-url" type="url" value="http://localhost:8000/predict"
-          placeholder="http://localhost:8000/predict" />
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:280px; margin-left:auto;">
+          <label for="api-url" style="white-space:nowrap; color:var(--muted); font-size:.78rem;">API URL</label>
+          <input id="api-url" type="url"
+            placeholder="https://YOUR-CODESPACE-8000.preview.app.github.dev/predict"
+            style="flex:1;"
+            oninput="saveApiUrl()" />
+          <button id="test-btn" onclick="testConnection()"
+            style="padding:8px 14px; background:rgba(124,110,245,.15); border:1px solid rgba(124,110,245,.4);
+                   border-radius:8px; color:#a78bfa; font-size:.78rem; font-weight:600; cursor:pointer;
+                   white-space:nowrap; transition:background .2s;">
+            Test
+          </button>
+        </div>
       </div>
+
+      <!-- ── Connection status badge ── -->
+      <div id="conn-status" style="display:none; font-size:.75rem; margin-top:6px; padding:6px 12px;
+           border-radius:6px; display:none; align-items:center; gap:6px;"></div>
 
       <button id="classify-btn" onclick="classify()">
         <div class="spinner" id="spinner"></div>
@@ -668,6 +694,80 @@
       charCount.textContent = `${textarea.value.length.toLocaleString()} characters`;
     });
 
+    /* ── API URL — load from localStorage, fall back to localhost ─────────── */
+    const apiInput = document.getElementById('api-url');
+    const STORAGE_KEY = 'phil_engine_api_url';
+
+    function loadApiUrl() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      apiInput.value = saved || 'http://localhost:8000/predict';
+    }
+
+    function saveApiUrl() {
+      localStorage.setItem(STORAGE_KEY, apiInput.value.trim());
+      checkSetupBanner();
+    }
+
+    /* Show the amber warning banner if:
+       - page is NOT on localhost/127.0.0.1  (i.e. it's on GitHub Pages)
+       - AND the stored API URL still contains "localhost" */
+    function checkSetupBanner() {
+      const isRemote = !['localhost', '127.0.0.1', ''].includes(location.hostname);
+      const urlIsLocal = apiInput.value.includes('localhost') || apiInput.value.includes('127.0.0.1');
+      document.getElementById('setup-banner').style.display =
+        (isRemote && urlIsLocal) ? 'block' : 'none';
+    }
+
+    /* ── Test Connection ──────────────────────────────────────────────────── */
+    async function testConnection() {
+      const apiUrl  = apiInput.value.trim();
+      const statusEl = document.getElementById('conn-status');
+      const testBtn  = document.getElementById('test-btn');
+
+      if (!apiUrl) { showError('Please enter an API URL first.'); return; }
+
+      // Derive /health from /predict URL
+      const healthUrl = apiUrl.replace(/\/predict$/, '/health');
+
+      testBtn.textContent = 'Testing…';
+      testBtn.disabled = true;
+      statusEl.style.display = 'flex';
+      statusEl.style.background = 'rgba(255,255,255,.04)';
+      statusEl.style.border = '1px solid rgba(255,255,255,.1)';
+      statusEl.style.color = '#94a3b8';
+      statusEl.textContent = `Pinging ${healthUrl} …`;
+
+      try {
+        const res = await fetch(healthUrl, { method: 'GET', signal: AbortSignal.timeout(8000) });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.status === 'ok') {
+          statusEl.style.background = 'rgba(52,211,153,.08)';
+          statusEl.style.border     = '1px solid rgba(52,211,153,.3)';
+          statusEl.style.color      = '#34d399';
+          statusEl.textContent      = '✓ Connected — engine loaded and ready.';
+          document.getElementById('setup-banner').style.display = 'none';
+          saveApiUrl();
+        } else {
+          statusEl.style.background = 'rgba(251,146,60,.08)';
+          statusEl.style.border     = '1px solid rgba(251,146,60,.3)';
+          statusEl.style.color      = '#fb923c';
+          statusEl.textContent      = `⚠ Server responded but engine not ready (${res.status}). Run train.py first.`;
+        }
+      } catch (err) {
+        statusEl.style.background = 'rgba(248,113,113,.08)';
+        statusEl.style.border     = '1px solid rgba(248,113,113,.3)';
+        statusEl.style.color      = '#f87171';
+        statusEl.textContent      = `✗ Cannot reach server. Check the URL or make sure uvicorn is running. (${err.message})`;
+      } finally {
+        testBtn.textContent = 'Test';
+        testBtn.disabled = false;
+      }
+    }
+
+    /* Run on page load */
+    loadApiUrl();
+    checkSetupBanner();
+
     /* ── Scatter plot state (top-level — shared across all functions) ─────── */
     const SCHOOL_COLORS = {
       'Idealism': '#a78bfa',
@@ -678,25 +778,24 @@
       'Nihilism': '#f87171',
       'Stoicism': '#fbbf24',
     };
-    let _metaCache = null;   // cached /meta response (cluster centers + labels)
-    let _userPoint = null;   // {x, y, cluster} from latest /predict response
-    let _animFrame = 0;      // frame counter for star pulse animation
+    let _metaCache = null;
+    let _userPoint = null;
+    let _animFrame = 0;
 
     /* ── Classify ─────────────────────────────────────────────────────────── */
     async function classify() {
       const text = textarea.value.trim();
-      const apiUrl = document.getElementById('api-url').value.trim();
+      const apiUrl = apiInput.value.trim();
       const btn = document.getElementById('classify-btn');
       const spinner = document.getElementById('spinner');
       const lbl = document.getElementById('btn-label');
       const errBan = document.getElementById('error-banner');
       const results = document.getElementById('results');
 
-      // Validation
       if (!text) { showError('Please enter a philosophical passage first.'); return; }
       if (text.length < 20) { showError('Passage must be at least 20 characters.'); return; }
+      if (!apiUrl) { showError('Please enter the API URL and click Test first.'); return; }
 
-      // Loading state
       btn.disabled = true;
       spinner.style.display = 'block';
       lbl.textContent = 'Classifying…';
@@ -706,7 +805,6 @@
       try {
         const speed = document.querySelector('input[name="speed"]:checked').value;
 
-        // Execute inference
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -720,7 +818,6 @@
 
         const data = await response.json();
 
-        // Fetch /meta (cluster centroids + labels) — cache so we don't refetch
         if (!_metaCache) {
           const metaUrl = apiUrl.replace(/\/predict$/, '/meta');
           try {
@@ -748,28 +845,23 @@
       const speed = document.querySelector('input[name="speed"]:checked').value;
       const speedLabel = speed === 'fast' ? 'fast' : 'thinking (slow)';
 
-      // Verdict banner
       document.getElementById('svm-title').textContent = `🧮 SVM ${speedLabel}`;
       document.getElementById('svm-label').textContent = d.svm_label;
       document.getElementById('nn-tier1-label').textContent = d.nn_tier1.label;
       document.getElementById('nn-tier2-sub').textContent =
         `School: ${d.nn_tier2.label}  (${(d.nn_tier2.probabilities[d.nn_tier2.label] * 100).toFixed(1)}%)`;
 
-      // Probability bars
       renderBars('t1-probs', d.nn_tier1.probabilities, d.nn_tier1.label);
       renderBars('t2-probs', d.nn_tier2.probabilities, d.nn_tier2.label);
 
-      // Store user point for scatter
       _userPoint = { x: d.pca_x, y: d.pca_y, cluster: d.kmeans_cluster };
 
-      // Show cluster assignment badge
       const badge = document.getElementById('cluster-assignment');
       if (_metaCache && _metaCache.cluster_names) {
         const school = _metaCache.cluster_names[d.kmeans_cluster] || `Cluster ${d.kmeans_cluster}`;
         const branch = _metaCache.cluster_tier1 ? _metaCache.cluster_tier1[d.kmeans_cluster] : '';
         document.getElementById('assignment-school-name').textContent = school;
         document.getElementById('assignment-branch-name').textContent = branch;
-        // Color the school name
         document.getElementById('assignment-school-name').style.color = getColor(school);
         badge.style.display = 'block';
       }
@@ -788,11 +880,10 @@
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       const W = canvas.width, H = canvas.height;
-      const PAD = 60;  // padding from edge
+      const PAD = 60;
 
       ctx.clearRect(0, 0, W, H);
 
-      // Collect all x/y to auto-scale
       const allX = meta.cluster_centers_2d.map(c => c[0]);
       const allY = meta.cluster_centers_2d.map(c => c[1]);
       if (userPt) { allX.push(userPt.x); allY.push(userPt.y); }
@@ -805,7 +896,6 @@
       function toCanvasX(v) { return PAD + (v - minX) / (maxX - minX) * (W - 2 * PAD); }
       function toCanvasY(v) { return H - PAD - (v - minY) / (maxY - minY) * (H - 2 * PAD); }
 
-      // ── Grid lines ──
       ctx.strokeStyle = 'rgba(255,255,255,0.05)';
       ctx.lineWidth = 1;
       for (let i = 0; i <= 4; i++) {
@@ -815,14 +905,12 @@
         ctx.beginPath(); ctx.moveTo(PAD, gy); ctx.lineTo(W - PAD, gy); ctx.stroke();
       }
 
-      // ── Axes ──
       ctx.strokeStyle = 'rgba(255,255,255,0.15)';
       ctx.lineWidth = 1.5;
       const cx0 = toCanvasX(0), cy0 = toCanvasY(0);
       if (cx0 > PAD && cx0 < W - PAD) { ctx.beginPath(); ctx.moveTo(cx0, PAD); ctx.lineTo(cx0, H - PAD); ctx.stroke(); }
       if (cy0 > PAD && cy0 < H - PAD) { ctx.beginPath(); ctx.moveTo(PAD, cy0); ctx.lineTo(W - PAD, cy0); ctx.stroke(); }
 
-      // ── Cluster bubbles ──
       meta.cluster_centers_2d.forEach((coord, idx) => {
         const name = meta.cluster_names[idx];
         const color = getColor(name);
@@ -830,19 +918,16 @@
         const cy = toCanvasY(coord[1]);
         const r = 34;
 
-        // Glow
         const grd = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 1.6);
         grd.addColorStop(0, color + '33');
         grd.addColorStop(1, 'transparent');
         ctx.beginPath(); ctx.arc(cx, cy, r * 1.6, 0, Math.PI * 2);
         ctx.fillStyle = grd; ctx.fill();
 
-        // Circle fill
         ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
         ctx.fillStyle = color + '22'; ctx.fill();
         ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
 
-        // School name label inside
         ctx.fillStyle = color;
         ctx.font = 'bold 11px Inter, sans-serif';
         ctx.textAlign = 'center';
@@ -850,20 +935,17 @@
         ctx.fillText(name, cx, cy);
       });
 
-      // ── User star ──
       if (userPt) {
         const ux = toCanvasX(userPt.x);
         const uy = toCanvasY(userPt.y);
         const pulse = 0.85 + 0.15 * Math.sin(_animFrame * 0.06);
 
-        // Outer pulse glow
         const grd2 = ctx.createRadialGradient(ux, uy, 4, ux, uy, 28 * pulse);
         grd2.addColorStop(0, 'rgba(245,197,66,0.5)');
         grd2.addColorStop(1, 'transparent');
         ctx.beginPath(); ctx.arc(ux, uy, 28 * pulse, 0, Math.PI * 2);
         ctx.fillStyle = grd2; ctx.fill();
 
-        // Draw a 5-pointed star
         ctx.beginPath();
         for (let i = 0; i < 10; i++) {
           const angle = (Math.PI / 5) * i - Math.PI / 2;
@@ -876,7 +958,6 @@
         ctx.fillStyle = '#f5c542'; ctx.fill();
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
 
-        // "You" label
         ctx.fillStyle = '#f5c542';
         ctx.font = 'bold 11px Inter, sans-serif';
         ctx.textAlign = 'center'; ctx.textBaseline = 'top';
@@ -884,7 +965,6 @@
       }
     }
 
-    /* Animation loop */
     function animateScatter() {
       if (_metaCache && _userPoint) {
         _animFrame++;
@@ -894,7 +974,6 @@
     }
     requestAnimationFrame(animateScatter);
 
-    /* Build legend */
     function buildLegend(meta) {
       const legend = document.getElementById('scatter-legend');
       legend.innerHTML = '';
@@ -907,7 +986,6 @@
         item.innerHTML = `<span class="legend-dot" style="background:${getColor(name)}"></span>${name}`;
         legend.appendChild(item);
       });
-      // Gold star for user
       const starItem = document.createElement('div');
       starItem.className = 'legend-item';
       starItem.innerHTML = `<span style="font-size:1rem;line-height:1;">⭐</span> Your Text`;
@@ -918,7 +996,6 @@
       const container = document.getElementById(containerId);
       container.innerHTML = '';
 
-      // Sort descending
       const sorted = Object.entries(probs).sort((a, b) => b[1] - a[1]);
 
       sorted.forEach(([label, prob]) => {
@@ -942,7 +1019,6 @@
         container.appendChild(row);
       });
 
-      // Animate bars in after DOM paint
       requestAnimationFrame(() => {
         container.querySelectorAll('.prob-bar-fill').forEach(el => {
           el.style.width = el.dataset.target;
@@ -950,7 +1026,6 @@
       });
     }
 
-    /* ── Error display ────────────────────────────────────────────────────── */
     function showError(msg) {
       const errBan = document.getElementById('error-banner');
       errBan.textContent = `⚠ ${msg}`;
@@ -958,7 +1033,6 @@
       errBan.scrollIntoView({ behavior: 'smooth' });
     }
 
-    /* ── Allow Ctrl+Enter to submit ──────────────────────────────────────── */
     textarea.addEventListener('keydown', e => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') classify();
     });
