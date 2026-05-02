@@ -1,0 +1,61 @@
+# Name of the GitHub Action workflow
+name: CI/CD Pipeline
+
+# Specify when this workflow should run
+on:
+  # Trigger the workflow on push events
+  push:
+    # Only trigger when pushing to the main branch
+    branches: [ "main" ]
+  # Trigger the workflow on pull requests
+  pull_request:
+    # Only trigger for pull requests targeting the main branch
+    branches: [ "main" ]
+
+# Define the jobs that make up the workflow
+jobs:
+  # The name of our single job is "build-and-test"
+  build-and-test:
+    # Specify the operating system the runner should use
+    runs-on: ubuntu-latest
+
+    # Define the sequence of steps for this job
+    steps:
+      # Step 1: Check out the repository code onto the runner
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up the Python environment
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          # Specify the exact Python version to use
+          python-version: "3.10"
+          # Enable caching for pip to speed up future runs
+          cache: "pip"
+
+      # Step 3: Install the project dependencies
+      - name: Install Dependencies
+        # Upgrade pip first, then install from requirements.txt
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Verify that the backend code has no syntax errors
+      - name: Test Backend Syntax
+        # Compiles the Python API file to ensure there are no basic syntax errors
+        run: python -m py_compile api.py
+
+      # Step 5: Verify that the model training Dockerfile builds successfully
+      - name: Build Training Docker Image
+        # Use docker build to ensure the training Dockerfile has no syntax errors
+        run: docker build -t philo-train-test -f Docker/model_training.dockerfile .
+
+      # Step 6: Verify that the backend Dockerfile builds successfully
+      - name: Build Backend Docker Image
+        # To build the backend image without running the heavy training step first,
+        # we create an empty dummy 'engine_artifacts' directory so the COPY command doesn't fail.
+        # This tests that the frontend (index.html) and backend files are copied correctly.
+        run: |
+          mkdir -p engine_artifacts
+          docker build -t philo-backend-test -f Docker/backend.dockerfile .

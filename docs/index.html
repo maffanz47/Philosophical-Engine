@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Philosophical Text Engine</title>
+  <meta name="description"
+    content="Classify philosophical text into branches and schools of thought using a hybrid SVM + Neural Network pipeline." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ── Design Tokens ──────────────────────────────────────────────────── */
+    :root {
+      --bg: #0a0c12;
+      --surface: #111420;
+      --surface2: #181c2c;
+      --border: rgba(255, 255, 255, .07);
+      --accent: #7c6ef5;
+      --accent2: #a78bfa;
+      --gold: #f5c542;
+      --green: #34d399;
+      --red: #f87171;
+      --muted: #6b7280;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow: 0 8px 40px rgba(0, 0, 0, .6);
+    }
+
+    /* ── Reset ──────────────────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Animated background grid ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(124, 110, 245, .03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 110, 245, .03) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    header {
+      width: 100%;
+      max-width: 860px;
+      padding: 56px 24px 0;
+      text-align: center;
+    }
+
+    .logo-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(124, 110, 245, .12);
+      border: 1px solid rgba(124, 110, 245, .3);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--accent2);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 600;
+      background: linear-gradient(135deg, #e2e8f0 30%, var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      color: var(--text-dim);
+      font-size: .95rem;
+      font-weight: 400;
+    }
+
+    /* ── Main card ───────────────────────────────────────────────────────── */
+    main {
+      width: 100%;
+      max-width: 860px;
+      padding: 32px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      transition: border-color .2s;
+    }
+
+    .card:focus-within {
+      border-color: rgba(124, 110, 245, .4);
+    }
+
+    /* ── Input area ──────────────────────────────────────────────────────── */
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .input-label {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    #char-count {
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 160px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: .95rem;
+      line-height: 1.7;
+      padding: 16px;
+      resize: vertical;
+      transition: border-color .2s;
+      outline: none;
+    }
+
+    textarea::placeholder {
+      color: var(--muted);
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    /* Backend URL row */
+    .url-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .url-row label {
+      font-size: .78rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .url-row input {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-dim);
+      font-family: 'Inter', sans-serif;
+      font-size: .8rem;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .url-row input:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Classify button ─────────────────────────────────────────────────── */
+    #classify-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      margin-top: 18px;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--accent), #6d5ce7);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #fff;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(124, 110, 245, .35);
+    }
+
+    #classify-btn:hover:not(:disabled) {
+      opacity: .9;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(124, 110, 245, .5);
+    }
+
+    #classify-btn:active {
+      transform: translateY(0);
+    }
+
+    #classify-btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, .3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Error banner ────────────────────────────────────────────────────── */
+    #error-banner {
+      display: none;
+      background: rgba(248, 113, 113, .1);
+      border: 1px solid rgba(248, 113, 113, .3);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      color: var(--red);
+      font-size: .9rem;
+    }
+
+    /* ── Results section ─────────────────────────────────────────────────── */
+    #results {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Verdict banner */
+    .verdict {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      background: linear-gradient(135deg, rgba(124, 110, 245, .12), rgba(167, 139, 250, .06));
+      border: 1px solid rgba(124, 110, 245, .25);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      align-items: center;
+    }
+
+    .verdict-model {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    .model-tag {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    .verdict-label {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.1;
+    }
+
+    .verdict-sub {
+      font-size: .82rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    .verdict-divider {
+      width: 1px;
+      align-self: stretch;
+      background: var(--border);
+    }
+
+    /* ── Section title ───────────────────────────────────────────────────── */
+    .section-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    /* ── Probability bars ────────────────────────────────────────────────── */
+    .prob-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .prob-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 52px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .prob-name {
+      font-size: .88rem;
+      font-weight: 500;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .prob-bar-track {
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.8s cubic-bezier(.4, 0, .2, 1);
+      width: 0%;
+    }
+
+    .prob-bar-fill.top {
+      background: linear-gradient(90deg, var(--gold), #fb923c);
+    }
+
+    .prob-pct {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: right;
+    }
+
+    /* ── Two-column grid for T1 / T2 ────────────────────────────────────── */
+    .probs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .probs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Scatter Plot ──────────────────────────────────────────────────────── */
+    .scatter-wrap {
+      position: relative;
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    #scatter-canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      cursor: default;
+    }
+
+    .scatter-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      color: var(--text-dim);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .scatter-axis-label {
+      position: absolute;
+      font-size: .68rem;
+      color: var(--muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    #axis-label-x {
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #axis-label-y {
+      top: 50%;
+      left: 6px;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center;
+    }
+
+    /* K-Means assignment badge */
+    #cluster-assignment {
+      display: none;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 20px;
+      text-align: center;
+    }
+
+    .assignment-school {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .assignment-branch {
+      font-size: .8rem;
+      color: var(--text-dim);
+    }
+
+    .assignment-note {
+      font-size: .73rem;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    footer {
+      margin-top: auto;
+      padding: 24px;
+      font-size: .75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    footer a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Fade-in animation ───────────────────────────────────────────────── */
+    .fade-in {
+      animation: fadeUp .4s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Header ────────────────────────────────────────────────────────────── -->
+  <header>
+    <div class="logo-pill">
+      <span>⚗️</span> Philosophical Text Engine
+    </div>
+    <h1>Classify Philosophical Thought</h1>
+    <p class="subtitle">
+      A hybrid TF-IDF · SVM · Neural Network pipeline that maps text to
+      its branch and school of philosophy.
+    </p>
+  </header>
+
+  <!-- ── Main ──────────────────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- Input Card -->
+    <div class="card">
+      <div class="input-header">
+        <span class="input-label">Your Passage</span>
+        <span id="char-count">0 characters</span>
+      </div>
+
+      <textarea id="text-input" placeholder="Paste or type a philosophical passage here…&#10;&#10;e.g. " The will to
+        power is the fundamental drive, the engine beneath all human striving and creation…"" maxlength="5000"
+        aria-label="Philosophical text input"></textarea>
+
+      <!-- ── Codespace setup banner (shown when localhost detected on remote origin) ── -->
+      <div id="setup-banner" style="display:none; background:rgba(245,197,66,.08); border:1px solid rgba(245,197,66,.35); border-radius:8px; padding:14px 18px; margin-bottom:14px;">
+        <strong style="color:#f5c542;">⚠ Backend URL Required</strong>
+        <p style="color:#94a3b8; font-size:.82rem; margin-top:6px; line-height:1.6;">
+          Your frontend is on <strong style="color:#e2e8f0;">GitHub Pages</strong> but the API URL still points to
+          <code style="background:rgba(255,255,255,.08); padding:1px 6px; border-radius:4px;">localhost</code> — that won't work remotely.<br>
+          Paste your <strong style="color:#f5c542;">GitHub Codespace backend URL</strong> below, then click <em>Test</em>.
+          <br><span style="font-size:.75rem; color:#6b7280;">Format: <code>https://YOUR-CODESPACE-8000.preview.app.github.dev/predict</code></span>
+        </p>
+      </div>
+
+      <!-- ── Speed + API URL row ── -->
+      <div class="url-row" style="flex-wrap:wrap; gap:8px;">
+        <label style="color: var(--muted); font-size: .78rem; white-space:nowrap;">Speed:</label>
+        <label style="color: var(--text-dim); font-size: .8rem; display: flex; align-items: center; gap: 4px;">
+          <input type="radio" name="speed" value="fast" /> Fast
+        </label>
+        <label style="color: var(--text-dim); font-size: .8rem; display: flex; align-items: center; gap: 4px;">
+          <input type="radio" name="speed" value="slow" checked /> Slow (Thinking)
+        </label>
+
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:280px; margin-left:auto;">
+          <label for="api-url" style="white-space:nowrap; color:var(--muted); font-size:.78rem;">API URL</label>
+          <input id="api-url" type="url"
+            placeholder="https://YOUR-CODESPACE-8000.preview.app.github.dev/predict"
+            style="flex:1;"
+            oninput="saveApiUrl()" />
+          <button id="test-btn" onclick="testConnection()"
+            style="padding:8px 14px; background:rgba(124,110,245,.15); border:1px solid rgba(124,110,245,.4);
+                   border-radius:8px; color:#a78bfa; font-size:.78rem; font-weight:600; cursor:pointer;
+                   white-space:nowrap; transition:background .2s;">
+            Test
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Connection status badge ── -->
+      <div id="conn-status" style="display:none; font-size:.75rem; margin-top:6px; padding:6px 12px;
+           border-radius:6px; display:none; align-items:center; gap:6px;"></div>
+
+      <button id="classify-btn" onclick="classify()">
+        <div class="spinner" id="spinner"></div>
+        <span id="btn-label">Classify Passage</span>
+      </button>
+    </div>
+
+    <!-- Error banner -->
+    <div id="error-banner" role="alert"></div>
+
+    <!-- Results -->
+    <div id="results">
+
+      <!-- Verdict banner -->
+      <div class="verdict fade-in">
+        <div class="verdict-model">
+          <div class="model-tag" id="svm-title">🧮 SVM (Deterministic)</div>
+          <div class="verdict-label" id="svm-label">—</div>
+          <div class="verdict-sub" id="svm-sub">Support Vector Machine</div>
+        </div>
+        <div class="verdict-divider"></div>
+        <div class="verdict-model">
+          <div class="model-tag">🧠 Neural Network</div>
+          <div class="verdict-label" id="nn-tier1-label">—</div>
+          <div class="verdict-sub" id="nn-tier2-sub">—</div>
+        </div>
+      </div>
+
+      <!-- Probabilities grid -->
+      <div class="probs-grid">
+
+        <!-- Tier 1 -->
+        <div class="card fade-in">
+          <div class="section-title">Tier 1 — Branch Probabilities</div>
+          <div class="prob-grid" id="t1-probs"></div>
+        </div>
+
+        <!-- Tier 2 -->
+        <div class="card fade-in">
+          <div class="section-title">Tier 2 — School of Thought Probabilities</div>
+          <div class="prob-grid" id="t2-probs"></div>
+        </div>
+
+      </div>
+
+      <!-- Unsupervised Analysis Card -->
+      <div class="card fade-in" id="unsupervised-card">
+        <div class="section-title">Unsupervised Analysis — How the AI Grouped Philosophical Texts</div>
+
+        <!-- Assignment Badge -->
+        <div id="cluster-assignment">
+          <div class="assignment-school" id="assignment-school-name">—</div>
+          <div class="assignment-branch">Branch: <span id="assignment-branch-name">—</span></div>
+          <div class="assignment-note">
+            Your text falls into this philosophical cluster — meaning its writing style and vocabulary
+            is most similar to texts from this school of thought.
+          </div>
+        </div>
+
+        <!-- Scatter Plot -->
+        <div class="scatter-wrap" style="margin-top:12px; position:relative;">
+          <canvas id="scatter-canvas" width="820" height="440"></canvas>
+          <span class="scatter-axis-label" id="axis-label-x">← More Concrete &nbsp;|&nbsp; More Abstract →</span>
+          <span class="scatter-axis-label" id="axis-label-y">Objective ↑ | ↓ Subjective</span>
+        </div>
+
+        <!-- Legend -->
+        <div class="scatter-legend" id="scatter-legend"></div>
+
+        <!-- Explanation -->
+        <p style="font-size:.8rem;color:var(--muted);line-height:1.7;margin-top:4px;">
+          <strong style="color:var(--text-dim)">What am I looking at?</strong>
+          Each coloured bubble represents a natural grouping (cluster) that the AI discovered in 17,500
+          philosophical text chunks — <em>without ever being told the labels</em>.
+          The AI found these patterns purely from vocabulary similarity.
+          The <strong style="color:#f5c542">⭐ star</strong> shows where <em>your text</em> lands in this space.
+          The closer it is to a bubble, the more your writing sounds like that school of philosophy.
+        </p>
+      </div>
+
+    </div><!-- /results -->
+
+  </main>
+
+  <footer>
+    Built by
+    <a href="https://github.com/maffanz47/Philosophical-Engine" target="_blank" rel="noopener">
+      Affan , Hassan, GOAT, Shahnawaz
+    </a>
+    · Philosophical Text Engine ·
+    <a href="https://github.com/maffanz47/Philosophical-Engine" target="_blank" rel="noopener">
+      View on GitHub
+    </a>
+  </footer>
+
+  <script>
+    /* ── Char counter ─────────────────────────────────────────────────────── */
+    const textarea = document.getElementById('text-input');
+    const charCount = document.getElementById('char-count');
+    textarea.addEventListener('input', () => {
+      charCount.textContent = `${textarea.value.length.toLocaleString()} characters`;
+    });
+
+    /* ── API URL — load from localStorage, fall back to localhost ─────────── */
+    const apiInput = document.getElementById('api-url');
+    const STORAGE_KEY = 'phil_engine_api_url';
+
+    function loadApiUrl() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      apiInput.value = saved || 'http://localhost:8000/predict';
+    }
+
+    function saveApiUrl() {
+      localStorage.setItem(STORAGE_KEY, apiInput.value.trim());
+      checkSetupBanner();
+    }
+
+    /* Show the amber warning banner if:
+       - page is NOT on localhost/127.0.0.1  (i.e. it's on GitHub Pages)
+       - AND the stored API URL still contains "localhost" */
+    function checkSetupBanner() {
+      const isRemote = !['localhost', '127.0.0.1', ''].includes(location.hostname);
+      const urlIsLocal = apiInput.value.includes('localhost') || apiInput.value.includes('127.0.0.1');
+      document.getElementById('setup-banner').style.display =
+        (isRemote && urlIsLocal) ? 'block' : 'none';
+    }
+
+    /* ── Test Connection ──────────────────────────────────────────────────── */
+    async function testConnection() {
+      const apiUrl  = apiInput.value.trim();
+      const statusEl = document.getElementById('conn-status');
+      const testBtn  = document.getElementById('test-btn');
+
+      if (!apiUrl) { showError('Please enter an API URL first.'); return; }
+
+      // Derive /health from /predict URL
+      const healthUrl = apiUrl.replace(/\/predict$/, '/health');
+
+      testBtn.textContent = 'Testing…';
+      testBtn.disabled = true;
+      statusEl.style.display = 'flex';
+      statusEl.style.background = 'rgba(255,255,255,.04)';
+      statusEl.style.border = '1px solid rgba(255,255,255,.1)';
+      statusEl.style.color = '#94a3b8';
+      statusEl.textContent = `Pinging ${healthUrl} …`;
+
+      try {
+        const res = await fetch(healthUrl, { method: 'GET', signal: AbortSignal.timeout(8000) });
+        const json = await res.json().catch(() => ({}));
+        if (res.ok && json.status === 'ok') {
+          statusEl.style.background = 'rgba(52,211,153,.08)';
+          statusEl.style.border     = '1px solid rgba(52,211,153,.3)';
+          statusEl.style.color      = '#34d399';
+          statusEl.textContent      = '✓ Connected — engine loaded and ready.';
+          document.getElementById('setup-banner').style.display = 'none';
+          saveApiUrl();
+        } else {
+          statusEl.style.background = 'rgba(251,146,60,.08)';
+          statusEl.style.border     = '1px solid rgba(251,146,60,.3)';
+          statusEl.style.color      = '#fb923c';
+          statusEl.textContent      = `⚠ Server responded but engine not ready (${res.status}). Run train.py first.`;
+        }
+      } catch (err) {
+        statusEl.style.background = 'rgba(248,113,113,.08)';
+        statusEl.style.border     = '1px solid rgba(248,113,113,.3)';
+        statusEl.style.color      = '#f87171';
+        statusEl.textContent      = `✗ Cannot reach server. Check the URL or make sure uvicorn is running. (${err.message})`;
+      } finally {
+        testBtn.textContent = 'Test';
+        testBtn.disabled = false;
+      }
+    }
+
+    /* Run on page load */
+    loadApiUrl();
+    checkSetupBanner();
+
+    /* ── Scatter plot state (top-level — shared across all functions) ─────── */
+    const SCHOOL_COLORS = {
+      'Idealism': '#a78bfa',
+      'Materialism': '#34d399',
+      'Rationalism': '#60a5fa',
+      'Empiricism': '#f472b6',
+      'Existentialism': '#fb923c',
+      'Nihilism': '#f87171',
+      'Stoicism': '#fbbf24',
+    };
+    let _metaCache = null;
+    let _userPoint = null;
+    let _animFrame = 0;
+
+    /* ── Classify ─────────────────────────────────────────────────────────── */
+    async function classify() {
+      const text = textarea.value.trim();
+      const apiUrl = apiInput.value.trim();
+      const btn = document.getElementById('classify-btn');
+      const spinner = document.getElementById('spinner');
+      const lbl = document.getElementById('btn-label');
+      const errBan = document.getElementById('error-banner');
+      const results = document.getElementById('results');
+
+      if (!text) { showError('Please enter a philosophical passage first.'); return; }
+      if (text.length < 20) { showError('Passage must be at least 20 characters.'); return; }
+      if (!apiUrl) { showError('Please enter the API URL and click Test first.'); return; }
+
+      btn.disabled = true;
+      spinner.style.display = 'block';
+      lbl.textContent = 'Classifying…';
+      errBan.style.display = 'none';
+      results.style.display = 'none';
+
+      try {
+        const speed = document.querySelector('input[name="speed"]:checked').value;
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, speed }),
+        });
+
+        if (!response.ok) {
+          const err = await response.json().catch(() => ({}));
+          throw new Error(err.detail || `Server returned ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!_metaCache) {
+          const metaUrl = apiUrl.replace(/\/predict$/, '/meta');
+          try {
+            const mRes = await fetch(metaUrl);
+            _metaCache = await mRes.json();
+            buildLegend(_metaCache);
+          } catch (e) { console.warn('Could not load /meta', e); }
+        }
+
+        renderResults(data);
+
+      } catch (e) {
+        showError(`Request failed: ${e.message}`);
+      } finally {
+        btn.disabled = false;
+        spinner.style.display = 'none';
+        lbl.textContent = 'Classify Passage';
+      }
+    }
+
+    /* ── Render results ──────────────────────────────────────────────────── */
+    function renderResults(d) {
+      const results = document.getElementById('results');
+
+      const speed = document.querySelector('input[name="speed"]:checked').value;
+      const speedLabel = speed === 'fast' ? 'fast' : 'thinking (slow)';
+
+      document.getElementById('svm-title').textContent = `🧮 SVM ${speedLabel}`;
+      document.getElementById('svm-label').textContent = d.svm_label;
+      document.getElementById('nn-tier1-label').textContent = d.nn_tier1.label;
+      document.getElementById('nn-tier2-sub').textContent =
+        `School: ${d.nn_tier2.label}  (${(d.nn_tier2.probabilities[d.nn_tier2.label] * 100).toFixed(1)}%)`;
+
+      renderBars('t1-probs', d.nn_tier1.probabilities, d.nn_tier1.label);
+      renderBars('t2-probs', d.nn_tier2.probabilities, d.nn_tier2.label);
+
+      _userPoint = { x: d.pca_x, y: d.pca_y, cluster: d.kmeans_cluster };
+
+      const badge = document.getElementById('cluster-assignment');
+      if (_metaCache && _metaCache.cluster_names) {
+        const school = _metaCache.cluster_names[d.kmeans_cluster] || `Cluster ${d.kmeans_cluster}`;
+        const branch = _metaCache.cluster_tier1 ? _metaCache.cluster_tier1[d.kmeans_cluster] : '';
+        document.getElementById('assignment-school-name').textContent = school;
+        document.getElementById('assignment-branch-name').textContent = branch;
+        document.getElementById('assignment-school-name').style.color = getColor(school);
+        badge.style.display = 'block';
+      }
+
+      results.style.display = 'flex';
+      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function getColor(name) {
+      return SCHOOL_COLORS[name] || '#94a3b8';
+    }
+
+    /* Draw everything on the canvas */
+    function drawScatter(meta, userPt) {
+      const canvas = document.getElementById('scatter-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width, H = canvas.height;
+      const PAD = 60;
+
+      ctx.clearRect(0, 0, W, H);
+
+      const allX = meta.cluster_centers_2d.map(c => c[0]);
+      const allY = meta.cluster_centers_2d.map(c => c[1]);
+      if (userPt) { allX.push(userPt.x); allY.push(userPt.y); }
+
+      const minX = Math.min(...allX) - 0.3;
+      const maxX = Math.max(...allX) + 0.3;
+      const minY = Math.min(...allY) - 0.3;
+      const maxY = Math.max(...allY) + 0.3;
+
+      function toCanvasX(v) { return PAD + (v - minX) / (maxX - minX) * (W - 2 * PAD); }
+      function toCanvasY(v) { return H - PAD - (v - minY) / (maxY - minY) * (H - 2 * PAD); }
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const gx = PAD + (W - 2 * PAD) * i / 4;
+        const gy = PAD + (H - 2 * PAD) * i / 4;
+        ctx.beginPath(); ctx.moveTo(gx, PAD); ctx.lineTo(gx, H - PAD); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(PAD, gy); ctx.lineTo(W - PAD, gy); ctx.stroke();
+      }
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1.5;
+      const cx0 = toCanvasX(0), cy0 = toCanvasY(0);
+      if (cx0 > PAD && cx0 < W - PAD) { ctx.beginPath(); ctx.moveTo(cx0, PAD); ctx.lineTo(cx0, H - PAD); ctx.stroke(); }
+      if (cy0 > PAD && cy0 < H - PAD) { ctx.beginPath(); ctx.moveTo(PAD, cy0); ctx.lineTo(W - PAD, cy0); ctx.stroke(); }
+
+      meta.cluster_centers_2d.forEach((coord, idx) => {
+        const name = meta.cluster_names[idx];
+        const color = getColor(name);
+        const cx = toCanvasX(coord[0]);
+        const cy = toCanvasY(coord[1]);
+        const r = 34;
+
+        const grd = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r * 1.6);
+        grd.addColorStop(0, color + '33');
+        grd.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(cx, cy, r * 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = grd; ctx.fill();
+
+        ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = color + '22'; ctx.fill();
+        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(name, cx, cy);
+      });
+
+      if (userPt) {
+        const ux = toCanvasX(userPt.x);
+        const uy = toCanvasY(userPt.y);
+        const pulse = 0.85 + 0.15 * Math.sin(_animFrame * 0.06);
+
+        const grd2 = ctx.createRadialGradient(ux, uy, 4, ux, uy, 28 * pulse);
+        grd2.addColorStop(0, 'rgba(245,197,66,0.5)');
+        grd2.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(ux, uy, 28 * pulse, 0, Math.PI * 2);
+        ctx.fillStyle = grd2; ctx.fill();
+
+        ctx.beginPath();
+        for (let i = 0; i < 10; i++) {
+          const angle = (Math.PI / 5) * i - Math.PI / 2;
+          const rad = i % 2 === 0 ? 12 : 5;
+          const sx = ux + rad * Math.cos(angle);
+          const sy = uy + rad * Math.sin(angle);
+          i === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy);
+        }
+        ctx.closePath();
+        ctx.fillStyle = '#f5c542'; ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; ctx.stroke();
+
+        ctx.fillStyle = '#f5c542';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+        ctx.fillText('Your Text', ux, uy + 16);
+      }
+    }
+
+    function animateScatter() {
+      if (_metaCache && _userPoint) {
+        _animFrame++;
+        drawScatter(_metaCache, _userPoint);
+      }
+      requestAnimationFrame(animateScatter);
+    }
+    requestAnimationFrame(animateScatter);
+
+    function buildLegend(meta) {
+      const legend = document.getElementById('scatter-legend');
+      legend.innerHTML = '';
+      const seen = new Set();
+      meta.cluster_names.forEach(name => {
+        if (seen.has(name)) return;
+        seen.add(name);
+        const item = document.createElement('div');
+        item.className = 'legend-item';
+        item.innerHTML = `<span class="legend-dot" style="background:${getColor(name)}"></span>${name}`;
+        legend.appendChild(item);
+      });
+      const starItem = document.createElement('div');
+      starItem.className = 'legend-item';
+      starItem.innerHTML = `<span style="font-size:1rem;line-height:1;">⭐</span> Your Text`;
+      legend.appendChild(starItem);
+    }
+
+    function renderBars(containerId, probs, topLabel) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      const sorted = Object.entries(probs).sort((a, b) => b[1] - a[1]);
+
+      sorted.forEach(([label, prob]) => {
+        const isTop = label === topLabel;
+        const pct = (prob * 100).toFixed(1);
+
+        const row = document.createElement('div');
+        row.className = 'prob-row';
+        row.innerHTML = `
+        <span class="prob-name" style="${isTop ? 'color:var(--text);font-weight:600' : ''}">
+          ${isTop ? '▶ ' : ''}${label}
+        </span>
+        <div class="prob-bar-track">
+          <div class="prob-bar-fill ${isTop ? 'top' : ''}"
+               style="width:0%"
+               data-target="${pct}%">
+          </div>
+        </div>
+        <span class="prob-pct" style="${isTop ? 'color:var(--gold)' : ''}">${pct}%</span>
+      `;
+        container.appendChild(row);
+      });
+
+      requestAnimationFrame(() => {
+        container.querySelectorAll('.prob-bar-fill').forEach(el => {
+          el.style.width = el.dataset.target;
+        });
+      });
+    }
+
+    function showError(msg) {
+      const errBan = document.getElementById('error-banner');
+      errBan.textContent = `⚠ ${msg}`;
+      errBan.style.display = 'block';
+      errBan.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    textarea.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') classify();
+    });
+  </script>
+
+</body>
+
+</html>

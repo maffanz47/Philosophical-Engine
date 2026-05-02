@@ -1,0 +1,10 @@
+# requirements.txt — Philosophical Text Engine dependencies
+requests>=2.31
+nltk>=3.8
+scikit-learn>=1.3
+torch>=2.0
+numpy>=1.24
+python-dotenv>=1.0   # auto-loads .env for notification credentials
+tqdm>=4.65           # progress bars used by ingestion.py
+fastapi>=0.110       # API server
+uvicorn>=0.29        # ASGI server for api.py
