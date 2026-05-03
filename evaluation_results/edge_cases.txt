@@ -1,0 +1,32 @@
+=== SVM SLOW TIER-1 EDGE CASES ===
+
+TRUE CLASS: Metaphysics | PREDICTED: Epistemology
+TEXT: "author’s business merely to adduce grounds and reasons, without determining what influence these ought to have on the mind of his judges. But, lest anything he may have said may become the innocent cause of doubt in their minds, or tend to weaken the effect which his arguments might otherwise produc..."
+--------------------------------------------------
+TRUE CLASS: Metaphysics | PREDICTED: Epistemology
+TEXT: "and not, how is the _faculty of thought_ itself possible? As the latter is an inquiry into the cause of a given effect, and has thus in it some semblance of an hypothesis (although, as I shall show on another occasion, this is really not the fact), it would seem that, in the present instance, I had ..."
+--------------------------------------------------
+TRUE CLASS: Metaphysics | PREDICTED: Epistemology
+TEXT: "and which admits of an indefinite advancement. The history of this intellectual revolution—much more important in its results than the discovery of the passage round the celebrated Cape of Good Hope—and of its author, has not been preserved. But Diogenes Laertius, in naming the supposed discoverer o..."
+--------------------------------------------------
+TRUE CLASS: Metaphysics | PREDICTED: Epistemology
+TEXT: "utility. Reason must approach nature with the view, indeed, of receiving information from it, not, however, in the character of a pupil, who listens to all that his master chooses to tell him, but in that of a judge, who compels the witnesses to reply to those questions which he himself thinks fit t..."
+--------------------------------------------------
+TRUE CLASS: Metaphysics | PREDICTED: Epistemology
+TEXT: "come to some beginning within our own power. And because the End, by the greatnesse of the impression, comes often to mind, in case our thoughts begin to wander, they are quickly again reduced into the way: which observed by one of the seven wise men, made him give men this praecept, which is now wo..."
+--------------------------------------------------
+TRUE CLASS: Epistemology | PREDICTED: Value Theory
+TEXT: "it is not vanity in me to mention what everybody knows: but it would be want of good manners not to acknowledge what so many are witnesses of, and every day tell me I am indebted to your lordship for. I wish they could as easily assist my gratitude, as they convince me of the great and growing engag..."
+--------------------------------------------------
+TRUE CLASS: Epistemology | PREDICTED: Value Theory
+TEXT: "I am obliged to be, and how much I am, MY LORD, Your Lordship’s most humble and most obedient servant, JOHN LOCKE 2 Dorset Court, 24th of May, 1689 THE EPISTLE TO THE READER READER, I have put into thy hands what has been the diversion of some of my idle and heavy hours. If it has the good luck to p..."
+--------------------------------------------------
+TRUE CLASS: Epistemology | PREDICTED: Value Theory
+TEXT: "is to them, if they are thy own, that I refer myself: but if they are taken upon trust from others, it is no great matter what they are; they are not following truth, but some meaner consideration; and it is not worth while to be concerned what he says or thinks, who says or thinks only as he is dir..."
+--------------------------------------------------
+TRUE CLASS: Epistemology | PREDICTED: Value Theory
+TEXT: "the truth whereof I am not fully persuaded, yet I consider myself as liable to mistakes as I can think thee, and know that this book must stand or fall with thee, not by any opinion I have of it, but thy own. If thou findest little in it new or instructive to thee, thou art not to blame me for it. I..."
+--------------------------------------------------
+TRUE CLASS: Epistemology | PREDICTED: Value Theory
+TEXT: "an attendance on my health gave me leisure, it was brought into that order thou now seest it. This discontinued way of writing may have occasioned, besides others, two contrary faults, viz., that too little and too much may be said in it. If thou findest anything wanting, I shall be glad that what I..."
+--------------------------------------------------

@@ -17,7 +17,7 @@ jobs:
 
       - name: Build Docker Compose Services
         # Test that both the trainer and backend images can build successfully
-        run: docker-compose build
+        run: docker compose build
 
       - name: Test Complete Setup Build
         # Also ensure the multi-stage complete dockerfile builds
