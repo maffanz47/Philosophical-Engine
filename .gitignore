@@ -3,3 +3,5 @@ __pycache__/
 .venv/
 engine_artifacts/
 .env
+context_summary.md
+report_prompt_context.md
